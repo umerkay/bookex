@@ -1,0 +1,86 @@
+# Backend Database Structure:
+
+1. User table:
+- User ID
+- Name
+- Email
+- Password
+- Phone Number
+- City
+- Reviews: [{
+    by (User ID)
+    description
+    rating
+    transactionID
+  }]
+
+2. Book table:
+- Book ID
+- Book Title
+- Author Name
+- Edition
+- ISBN
+- Subject
+- Class Level (9, 10, 11, 12, O Level, A Level)
+- Requests: select * from pendingtransactions where self.bookid = t.bookid and type = book requested
+- Provisions: select * from pendingtransactions where self.bookid = t.bookid and type = book provided
+
+3. Pending Transactions:
+- PendingTransactionID
+- Book ID
+- User ID
+- Condition
+- Date
+- PreferredCollectionPoint
+- Type: Book Requested / Book Provided
+
+4. Matched Transaction table:
+- Transaction ID
+- Donor User ID (Foreign Key)
+- Recipient User ID (Foreign Key)
+- Book ID (Foreign Key)
+- Transaction Code
+- Transaction Date
+- Transaction Status (pending, complete, canceled)
+- CollectionPointID
+
+API Routes:
+
+1. User Registration and Authentication:
+- POST /api/user/register: create a new user account
+- POST /api/user/login: log in a user and generate an authentication token
+- POST /api/user/logout: (AUTH) log out a user and invalidate their token 
+
+2. User Profile Management: //get user id from the jwt token
+- GET /api/user/: (AUTH) get user profile details
+- POST /api/user/update: (AUTH) update user profile details
+
+2. Book Management:
+- GET /api/book/all?class=''&subject='': get a list of available books by class or subject
+- GET /api/book/:id: get details of a specific book
+- POST /api/book/provide: add book to book table if not already present, add user as provider
+- POST /api/book/request: add book to book table if not already present, add user as requester
+- PUT /api/book/:id: update details of a specific pending request / provision
+- DELETE /api/book/:id: delete a specific pending reuqest / provision from database
+
+3. Transaction Management:
+- GET /api/transaction/:userid: get a list of all transactions for a user
+- GET /api/transaction/:id: get details of a specific transaction
+- DELETE /api/transaction/:id: cancel a transaction
+
+4. Review Management:
+- GET /api/review/:id: get all reviews for a specific user
+- POST /api/review: create a new review for a transaction for a user
+- DELETE /api/review/:id: delete a review
+
+baki ka abhi ke lye ignore kro wo admin mein ayega sab
+
+6. Collection Points Management:
+- GET /api/collection-point: get a list of all available collection points
+- POST /api/collection-point: create a new collection point
+- PUT /api/collection-point/:id: update an existing collection point
+- DELETE /api/collection-point/:id: delete a collection point
+
+7. Dashboard Management:
+- GET /api/dashboard/:id: get dashboard details for an admin user
+- PUT /api/dashboard/:id: update dashboard details for an admin user
