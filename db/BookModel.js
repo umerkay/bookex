@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 // Define the book schema
 const bookSchema = new mongoose.Schema({
-  bookID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, "Please provide a book ID!"],
-    unique: [true,'Book ID already exists'],
-  },
+  // bookID: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: [true, "Please provide a book ID!"],
+  //   unique: [true,'Book ID already exists'],
+  // },
   title: {
     type: String,
     required: [true, "Please provide a book title."]
