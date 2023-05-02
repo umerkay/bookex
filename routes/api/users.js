@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../../db/UserModel');
-const authenticateUser = require('../../authenticateUser');
+const authenticateUser = require('./auth');
 
 //routes
 //resgister endpoint
