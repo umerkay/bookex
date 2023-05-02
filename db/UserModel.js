@@ -1,21 +1,51 @@
-const mongoose = require("mongoose")
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-//describing the shape of the documents that will be entering the database
+// Describe the shape of the documents that will be entering the database
 const UserSchema = new Schema({
-    email: {
-        type: String,
-        required: [true, "Please provide an Email!"],
-        unique: [true, "Email Exist"],
+  name: {
+    type: String,
+    required: [true, "Please provide a name!"],
+    unique: false,
+  },
+  email: {
+    type: String,
+    required: [true, "Please provide an email!"],
+    unique: [true, "Email already exists"],
+  },
+  password: {
+    type: String,
+    required: [true, "Please provide a password!"],
+    unique: false,
+  },
+  phonenumber: {
+    type: Number,
+    required: [true, "Please provide a phonenumber!"],
+    unique: [true, "Phonenumber already exists"],
+  },
+  city: {
+    type: String,
+    required: [true, "Please provide a city!"],
+    unique: false,
+  },
+  reviews: [
+    {
+      by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModel",
       },
-    
-      password: {
-        type: String,
-        required: [true, "Please provide a password!"],
-        unique: false,
+      description: String,
+      rating: Number,
+      transactionID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "MatchedTransactionModel",
       },
     },
-    {timestamps: true});
+  ],
+}, { timestamps: true });
 
-//creating a model from the schema
-  module.exports = mongoose.model.Users || mongoose.model("Users", UserSchema);
+// Create a model from the schema
+const UserModel = mongoose.model("UserModel", UserSchema);
+
+// Export the model
+module.exports = UserModel;

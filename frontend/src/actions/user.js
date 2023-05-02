@@ -19,7 +19,7 @@ export const login = function (formData, dispatch) {
         dispatch({type: 'ERROR', payload: {error: err}})
     }) */
 
-    dispatch({type: 'LOGIN', payload: {user: formData.username, token: "token"}})
+    dispatch({type: 'LOGIN', payload: {user: formData.email, token: "token"}})
 
 }
 
