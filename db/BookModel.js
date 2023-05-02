@@ -33,14 +33,14 @@ const bookSchema = new mongoose.Schema({
     enum: ['9', '10', '11', '12', 'O Level', 'A Level'],
     required: [true, "Please provide the book's class level."]
   },
-  requests: [{
-    type: mongoose.Schema.Types.ObjectId, // This field is an array of ObjectId's that reference PendingTransaction documents
-    ref: 'PendingTransactionModel' // The 'ref' field tells Mongoose which model to use during population
-  }],
-  provisions: [{
-    type: mongoose.Schema.Types.ObjectId, // This field is an array of ObjectId's that reference PendingTransaction documents
-    ref: 'PendingTransactionModel' // The 'ref' field tells Mongoose which model to use during population
-  }],
+  // requests: [{
+  //   type: mongoose.Schema.Types.ObjectId, // This field is an array of ObjectId's that reference PendingTransaction documents
+  //   ref: 'PendingTransactionModel' // The 'ref' field tells Mongoose which model to use during population
+  // }],
+  // provisions: [{
+  //   type: mongoose.Schema.Types.ObjectId, // This field is an array of ObjectId's that reference PendingTransaction documents
+  //   ref: 'PendingTransactionModel' // The 'ref' field tells Mongoose which model to use during population
+  // }],
 });
 
 // This middleware is executed before every 'find' query on the book model. It populates the 'requests' and 'provisions' fields with
