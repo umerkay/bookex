@@ -14,7 +14,6 @@ router.post('/register', (request, response) => {
     .then((hashedPassword) => {
       // create a new user instance and collect the data
       const user = new Users({
-        userid: objectId(), // generate a new ObjectId value
         name: request.body.name,
         email: request.body.email,
         password: hashedPassword,
@@ -42,6 +41,7 @@ router.post('/register', (request, response) => {
     })
     // catch error if the password hash isn't successful
     .catch((e) => {
+      console.log(e);
       response.status(500).send({
         message: "Password was not hashed successfully",
         e,
@@ -49,47 +49,62 @@ router.post('/register', (request, response) => {
     });
 });
 
-// Login endpoint
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+// login endpoint
+router.post("/login", (request, response) => {
+  // check if email exists
+  Users.findOne({ email: request.body.email })
 
-  // Check if user with given email exists
-  Users.findOne({ email })
+    // if email exists
     .then((user) => {
-      if (!user) {
-        return res.status(404).json({ message: "Email not found" });
-      }
+      // compare the password entered and the hashed password found
+      bcrypt
+        .compare(request.body.password, user.password)
 
-      // Compare the entered password and the hashed password from the database
-      bcrypt.compare(password, user.password, (err, passwordMatch) => {
-        if (err || !passwordMatch) {
-          return res
-            .status(400)
-            .json({ message: "Invalid email or password" });
-        }
+        // if the passwords match
+        .then((passwordCheck) => {
 
-        // Create a JWT token with user ID and email
-        const token = jwt.sign(
-          {
-            userId: user._id,
-            userEmail: user.email,
-          },
-          process.env.JWT_SECRET,
-          { expiresIn: "24h" }
-        );
+          // check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
 
-        // Return success response with token and user email
-        res.status(200).json({
-          message: "Login successful",
-          email: user.email,
-          token,
+          //   create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              userEmail: user.email,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+          );
+
+          //   return success response
+          response.status(200).send({
+            message: "Login Successful",
+            email: user.email,
+            token,
+          });
+        })
+        // catch error if password does not match
+        .catch((error) => {
+          response.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
         });
-      });
     })
-    .catch((err) => {
-      res.status(500).json({ message: "Error occurred", error: err });
+    // catch error if email does not exist
+    .catch((e) => {
+      response.status(404).send({
+        message: "Email not found",
+        e,
+      });
     });
-});
+}
+);
 
 // POST /api/user/logout
 // AUTH: log out a user and invalidate their token
