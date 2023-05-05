@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 // Define the schema for the Pending Transaction collection
 const pendingTransactionSchema = new Schema({
-  pendingTransactionID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, 'Please provide a pending transaction ID!'],
-    unique: [true,'Pending transaction ID already exists'],
-  },
+  // pendingTransactionID: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: [true, 'Please provide a pending transaction ID!'],
+  //   unique: [true,'Pending transaction ID already exists'],
+  // },
   bookID: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, 'Please provide a book ID!'],

@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 // Describing the shape of the documents that will be entering the database
 const MatchedTransactionSchema = new Schema({
-  transactionID: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, "Please provide a transaction ID!"],
-    unique: [true,'Transaction ID already exists'],
-  },
+  // transactionID: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: [true, "Please provide a transaction ID!"],
+  //   unique: [true,'Transaction ID already exists'],
+  // },
   donorUserID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserModel",
