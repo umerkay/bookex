@@ -1,28 +1,60 @@
-export const login = function (formData, dispatch) {
+export const login = async function (formData, dispatch, callback) {
 
-    dispatch({type: 'LOADING'})
-    /*fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    }).then(res => res.json())
-    .then(data => {
-        if(data.success) {
-            dispatch({type: 'LOGIN', payload: data})
+    dispatch({type: 'LOADING'});
+    try {
+        const response = await fetch('http://localhost:5000/api/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        const data = await response.json();
+        if (response.status === 200) {
+            dispatch({type: 'LOGIN', payload: {user: { email: data.email, name: data.name }, token: data.token}});
+            callback();
         } else {
-            dispatch({type: 'ERROR', payload: {error: data.error}})
+            dispatch({type: 'ERROR', payload: {error: data.message}});
         }
-    })
-    .catch(err => {
-        dispatch({type: 'ERROR', payload: {error: err}})
-    }) */
+    } catch (error) {
+        dispatch({type: 'ERROR', payload: {error: error.message}});
+    }
 
-    dispatch({type: 'LOGIN', payload: {user: formData.email, token: "token"}})
+    // dispatch({type: 'LOGIN', payload: {user: formData.email, token: "token"}})
 
 }
 
-export const logout = function (dispatch) {
+export const register = async function (formData, dispatch) {
+    
+    dispatch({type: 'LOADING'});
+    try {
+        const response = await fetch('http://localhost:5000/api/users/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        const data = await response.json();
+        if (response.status === 201) {
+            dispatch({type: 'REGISTER', payload: {token: data.token}});
+        } else {
+            dispatch({type: 'ERROR', payload: {error: data.message}});
+        }
+    } catch (error) {
+        dispatch({type: 'ERROR', payload: {error: error.message}});
+    }
+
+    // dispatch({type: 'REGISTER', payload: {user: formData.email, token: "token"}})
+
+}
+
+export const logout = async function (dispatch) {
+    fetch('http://localhost:5000/api/users/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
     dispatch({type: 'LOGOUT'})
 }

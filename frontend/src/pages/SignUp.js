@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'
-import { login } from '../actions/user'
 import { useUserContext } from '../hooks/userContextHook'
+import { register } from '../actions/user'
 
 const SignUp = () => {
 
@@ -18,19 +18,28 @@ const SignUp = () => {
 
   function handleSubmit(e){
     e.preventDefault()
-    login(formDetails, dispatch)
-
-    setFormDetails({
+    register(formDetails, dispatch, () => {
+      setFormDetails({
         email: '',
         password: '',
         confirmPassword: ''
-    })
+      });
 
-    navigate('/')
+      navigate('/signin')
+    });
   }
 
   return (
     <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-3" controlId="name">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter name here"
+          value={formDetails.name} onChange={(e) => setFormDetails({...formDetails, name: e.target.value})}
+        />
+      </Form.Group>
+
       <Form.Group className="mb-3" controlId="email">
         <Form.Label>Email address</Form.Label>
         <Form.Control
@@ -55,6 +64,24 @@ const SignUp = () => {
           type="password"
           placeholder="Confirm Password"
           value={formDetails.confirmPassword} onChange={(e) => setFormDetails({...formDetails, confirmPassword: e.target.value})} 
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="city">
+        <Form.Label>City</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter city here"
+          value={formDetails.city} onChange={(e) => setFormDetails({...formDetails, city: e.target.value})}
+        />
+      </Form.Group>
+
+      <Form.Group className="mb-3" controlId="phonenumber">
+        <Form.Label>Phone Number</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter phone number here"
+          value={formDetails.phonenumber} onChange={(e) => setFormDetails({...formDetails, phonenumber: e.target.value})}
         />
       </Form.Group>
 

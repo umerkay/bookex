@@ -13,6 +13,7 @@ router.post('/register', (request, response) => {
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
       // create a new user instance and collect the data
+      console.log(request.body)
       const user = new Users({
         name: request.body.name,
         email: request.body.email,
@@ -85,6 +86,7 @@ router.post("/login", (request, response) => {
           response.status(200).send({
             message: "Login Successful",
             email: user.email,
+            name: user.name,
             token,
           });
         })

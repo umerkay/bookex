@@ -17,16 +17,16 @@ function UserSignin() {
 
   const navigate = useNavigate()
 
-  function handleSubmit(e){
-    e.preventDefault()
-    login(formDetails, dispatch)
-
+  async function handleSubmit(e){
+    e.preventDefault();
+    await login(formDetails, dispatch);
+    
     setFormDetails({
-        email: '',
-        password: ''
-    })
+      email: '',
+      password: ''
+    });
 
-    navigate('/')
+    navigate('/');
   }
 
   return (

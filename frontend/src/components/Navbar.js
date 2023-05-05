@@ -31,7 +31,7 @@ const Navbar = () =>{
             </form>
           </div>
           <div className="userInfo">
-            {isLoggedIn ? <h2 >Welcome {user}</h2> : null}
+            {isLoggedIn ? <h2 >Welcome {user?.name}</h2> : null}
             {isLoggedIn ? (
             <button className="btn" onClick={() => logout(dispatch)}>
               Logout
