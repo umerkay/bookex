@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useUserContext } from "../hooks/userContextHook";
 import { logout } from "../actions/user";
 
+
 const Navbar = () =>{
 
     const {isLoggedIn, user, dispatch} = useUserContext()
@@ -40,7 +41,6 @@ const Navbar = () =>{
            {isLoggedIn ? (
             <Link className="btn" to="/MyAccount">myAccount</Link>
             ) : null}
-
         </div>
         </div>
       </nav>
