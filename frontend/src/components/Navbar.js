@@ -37,6 +37,10 @@ const Navbar = () =>{
               Logout
             </button>
           ) : null}
+           {isLoggedIn ? (
+            <Link className="btn" to="/MyAccount">myAccount</Link>
+            ) : null}
+
         </div>
         </div>
       </nav>
