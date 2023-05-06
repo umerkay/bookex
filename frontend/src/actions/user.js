@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const login = async function (formData, dispatch, callback) {
 
     dispatch({type: 'LOADING'});
@@ -58,3 +60,13 @@ export const logout = async function (dispatch) {
     });
     dispatch({type: 'LOGOUT'})
 }
+
+
+export const updateUser = async (userId, updates, dispatch) => {
+  try {
+    const res = await axios.patch(`/api/users/${userId}`, updates);
+    dispatch({ type: 'UPDATE_USER', payload: res.data });
+  } catch (error) {
+    throw new Error(error.response.data.message || 'Failed to update user');
+  }
+};
