@@ -4,7 +4,7 @@ export const MyAccount = () => {
     return (
         <div className="MyAccount">
         <Sidebar>
-            <h1> This is My Account</h1>
+            <h1> Welcome to Dashboard!</h1>
         </Sidebar>
         </div>
     );

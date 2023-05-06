@@ -70,3 +70,23 @@ export const updateUser = async (userId, updates, dispatch) => {
     throw new Error(error.response.data.message || 'Failed to update user');
   }
 };
+
+export const createAddress = async (userId, newAddress, dispatch) => {
+  try {
+    const response = await axios.post(`/api/users/${userId}/addresses`, newAddress);
+    const { address } = response.data;
+    dispatch({ type: 'ADD_ADDRESS', payload: address });
+    return address;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const transaction = async (userId) => {
+    try {
+      const response = await axios.get(`/api/user/${userId}/transactions`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
