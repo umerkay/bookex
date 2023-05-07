@@ -1,5 +1,37 @@
 import axios from 'axios';
 
+// export const login = async function (formData, dispatch, callback) {
+//     dispatch({type: 'LOADING'});
+//     try {
+//         const response = await fetch('http://localhost:5000/api/users/login', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(formData)
+//         });
+//         const data = await response.json();
+//         if (response.status === 200) {
+//             const token = data.token;
+//             // Store the token in the browser's local storage
+//             localStorage.setItem('authToken', token);
+//             // Pass the token in the Authorization header of subsequent requests
+//             const authHeader = { 'Authorization': token };
+//             const response = await fetch('http://localhost:5000/api/yourEndpoint', {
+//                 method: 'GET',
+//                 headers: authHeader
+//             });
+//             const data = await response.json();
+//             dispatch({type: 'LOGIN', payload: {user: { email: data.email, name: data.name }, token: data.token}});
+//             callback();
+//         } else {
+//             dispatch({type: 'ERROR', payload: {error: data.message}});
+//         }
+//     } catch (error) {
+//         dispatch({type: 'ERROR', payload: {error: error.message}});
+//     }
+// }
+
 export const login = async function (formData, dispatch, callback) {
 
     dispatch({type: 'LOADING'});
