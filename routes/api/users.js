@@ -123,5 +123,35 @@ router.post("/logout", authenticateUser, (req, res) => {
     });
 });
 
+//get user id from the jwt token
+// GET /api/user/: (AUTH) get user profile details
+router.get("/details", authenticateUser, (req, res) => {
+  const user = req.user;
+  res.status(200).json({
+    message: "User profile details",
+    user: {
+      name: user.name,
+      email: user.email,
+      phonenumber: user.phonenumber,
+      city: user.city,
+    },
+  });
+});
+
+//POST /api/user/update: (AUTH) update user profile details
+router.post("/update", authenticateUser, (req, res) => {
+  const user = req.user;
+  user.name = req.body.name;
+  user.email = req.body.email;
+  user.phonenumber = req.body.phonenumber;
+  user.city = req.body.city;
+  user.save()
+    .then(() => {
+      res.status(200).json({ message: "User profile updated" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Error occurred", error: error });
+    });
+});
 
 module.exports = router;
