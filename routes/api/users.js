@@ -50,6 +50,13 @@ router.post('/register', (request, response) => {
     });
 });
 
+router.post('/user', authenticateUser, (request, response) => {
+  response.status(200).send({
+    message: "Login Successful",
+    user: request.user
+  });
+});
+
 // login endpoint
 router.post("/login", (request, response) => {
   // check if email exists
@@ -85,8 +92,7 @@ router.post("/login", (request, response) => {
           //   return success response
           response.status(200).send({
             message: "Login Successful",
-            email: user.email,
-            name: user.name,
+            user,
             token,
           });
         })
@@ -125,18 +131,18 @@ router.post("/logout", authenticateUser, (req, res) => {
 
 //get user id from the jwt token
 // GET /api/user/: (AUTH) get user profile details
-router.get("/details", authenticateUser, (req, res) => {
-  const user = req.user;
-  res.status(200).json({
-    message: "User profile details",
-    user: {
-      name: user.name,
-      email: user.email,
-      phonenumber: user.phonenumber,
-      city: user.city,
-    },
-  });
-});
+// router.get("/details", authenticateUser, (req, res) => {
+//   const user = req.user;
+//   res.status(200).json({
+//     message: "User profile details",
+//     user: {
+//       name: user.name,
+//       email: user.email,
+//       phonenumber: user.phonenumber,
+//       city: user.city,
+//     },
+//   });
+// });
 
 //POST /api/user/update: (AUTH) update user profile details
 router.post("/update", authenticateUser, (req, res) => {

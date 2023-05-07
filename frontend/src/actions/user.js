@@ -45,8 +45,35 @@ export const login = async function (formData, dispatch, callback) {
         });
         const data = await response.json();
         if (response.status === 200) {
-            dispatch({type: 'LOGIN', payload: {user: { email: data.email, name: data.name }, token: data.token}});
+            dispatch({type: 'LOGIN', payload: {user: data.user, token: data.token}});
             callback();
+        } else {
+            dispatch({type: 'ERROR', payload: {error: data.message}});
+        }
+    } catch (error) {
+        dispatch({type: 'ERROR', payload: {error: error.message}});
+    }
+
+    // dispatch({type: 'LOGIN', payload: {user: formData.email, token: "token"}})
+
+}
+
+export const getUserInfo = async function (token, dispatch) {
+
+    dispatch({type: 'LOADING'});
+    try {
+
+        const response = await fetch('http://localhost:5000/api/users/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            },
+        });
+
+        const data = await response.json();
+        if (response.status === 200) {
+            dispatch({type: 'USER_LOADED', payload: {user: data.user}});
         } else {
             dispatch({type: 'ERROR', payload: {error: data.message}});
         }

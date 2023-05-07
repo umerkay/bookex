@@ -1,18 +1,30 @@
 import Sidebar from "../components/Sidebar";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUserContext } from '../hooks/userContextHook';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { updateUser } from '../actions/user';
 
 function MyProfile() {
-    const { user, dispatch } = useUserContext();
-    const [name, setName] = useState(user.name);
-    const [mobile, setMobile] = useState(user.mobile);
+    const { user, dispatch, isLoading } = useUserContext();
+
+    const [name, setName] = useState(user?.name);
+    const [mobile, setMobile] = useState(user?.phonenumber);
+    const [city, setCity] = useState(user?.city);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    useEffect(() => {
+      setName(user?.name);
+      setMobile(user?.phonenumber);
+      setCity(user?.city);
+    }, [user]);
+    
+    if(isLoading || user == null) {
+      return (<div>Loading</div>)
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -71,6 +83,10 @@ function MyProfile() {
           <Form.Group className="mb-3" controlId="mobile">
             <Form.Label>Mobile</Form.Label>
             <Form.Control type="text" placeholder="Enter your mobile number" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="city">
+            <Form.Label>City</Form.Label>
+            <Form.Control type="text" placeholder="Enter your city" value={city} onChange={(e) => setCity(e.target.value)} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="currentPassword">
             <Form.Label>Current Password</Form.Label>

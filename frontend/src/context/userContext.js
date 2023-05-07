@@ -6,16 +6,19 @@ export const UserProvider = ({children}) => {
 
     const initialState = {
         user: null,
-        token: null,
+        //get token from local storage
+        token: localStorage.getItem('token') || null,
         isLoggedIn: false,
         isLoading: false,
         error: null
     }
 
     const reducer = (state, action) => {
-        console.log(state,action);
         switch(action.type) {
             case 'LOGIN':
+                //set token in local storage
+                localStorage.setItem('token', action.payload.token);
+
                 return {
                     ...state,
                     user: action.payload.user,
@@ -24,7 +27,17 @@ export const UserProvider = ({children}) => {
                     isLoading: false,
                     error: null
                 }
+            case 'USER_LOADED':
+                return {
+                    ...state,
+                    user: action.payload.user,
+                    isLoggedIn: true,
+                    isLoading: false,
+                    error: null
+                }
             case 'LOGOUT':
+                //remove token from local storage
+                localStorage.removeItem('token');
                 return {
                     ...state,
                     user: null,
