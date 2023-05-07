@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const Users = require('./routes/api/users');
+const Books = require('./routes/api/books');
 const port = process.env.PORT || 5000;
 
 //database connection using env variables and dotenv
@@ -31,3 +32,4 @@ app.use(express.json());
 
 //routes
 app.use('/api/users', Users);
+app.use('/api/books', Books);
