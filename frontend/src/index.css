@@ -26,4 +26,5 @@ code {
 
 button {
   border-radius: 100rem !important;
+  outline: none !important;
 }

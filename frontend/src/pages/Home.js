@@ -1,11 +1,12 @@
 //import React, {useContext, useEffect } from 'react'
-import { useUserContext } from '../hooks/userContextHook'
+// import { useUserContext } from '../hooks/userContextHook'
+import { Link } from "react-router-dom"
 import brandimg from "./Asset 2.png"
 import "./home.scss"
 
 function Home() {
 
-    const { isLoggedIn, user } = useUserContext()
+    // const { isLoggedIn, user } = useUserContext()
 
     return (
         <div id='home'>
@@ -13,7 +14,9 @@ function Home() {
                 <div id="info">
                     <h1>Bookex Pakistan</h1>
                     <h2>For all your textbook needs</h2>
-                    <button className='btn btn-main'>Proceed with Book Submission</button>
+                    <Link to={"/bookform"}>
+                        <button className='btn btn-main'>Proceed with Book Submission</button>
+                    </Link>
                     <button className='btn btn-main'>Proceed with Book Request</button>
                     <img src={brandimg} id="brandimg" height="300" />
                 </div>

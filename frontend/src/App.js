@@ -15,6 +15,7 @@ import MyProfile from './pages/MyProfile'
 import MyAddress from './pages/MyAddress'
 import Exchanges from './pages/Exchanges'
 import BasicModal from './components/BasicModal';
+import MultiStepForm from './components/MultiStepForm';
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
         <div className="pages">
           <Routes>
             <Route path="/" element={<Home/>} />
+            <Route path="/bookform" element={<MultiStepForm/>} />
             {/* <Route path="/signin" element={<SignIn/>} /> */}
             {/* <Route path="/signup" element={<SignUp/>} /> */}
             <Route path="/MyAccount" element={<MyAccount/>} />
