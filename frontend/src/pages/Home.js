@@ -3,6 +3,9 @@
 import { Link } from "react-router-dom"
 import brandimg from "./Asset 2.png"
 import "./home.scss"
+import UserForm from '../components/UserForm';
+import React, { useState } from 'react';
+
 
 function Home() {
 
