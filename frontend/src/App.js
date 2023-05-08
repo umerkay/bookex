@@ -16,6 +16,8 @@ import MyAddress from './pages/MyAddress'
 import Exchanges from './pages/Exchanges'
 import BasicModal from './components/BasicModal';
 
+
+
 function App() {
 
   const {dispatch, token} = useUserContext();
@@ -53,6 +55,8 @@ function App() {
           </Routes>
         </div>
       </BrowserRouter> 
+     
+
     </div>
   );
 }
