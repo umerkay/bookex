@@ -15,6 +15,8 @@ import MyProfile from './pages/MyProfile'
 import MyAddress from './pages/MyAddress'
 import Exchanges from './pages/Exchanges'
 import BasicModal from './components/BasicModal';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 
 
@@ -46,6 +48,8 @@ function App() {
         <div className="pages">
           <Routes>
             <Route path="/" element={<Home/>} />
+            <Route path="/about" element={<About/>} />
+            <Route path="/contact" element={<Contact/>} />
             {/* <Route path="/signin" element={<SignIn/>} /> */}
             {/* <Route path="/signup" element={<SignUp/>} /> */}
             <Route path="/MyAccount" element={<MyAccount/>} />

@@ -25,7 +25,7 @@ export class Confirm extends Component {
       <MuiThemeProvider>
         <>
           <Dialog
-            open
+            open={true}
             fullWidth
             maxWidth='sm'
           >
