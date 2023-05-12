@@ -8,6 +8,7 @@ export default function BasicModal(props) {
     <Modal show={props.show} onHide={props.handleClose}>
     <Modal.Header closeButton>
         <Modal.Title>{props.title}</Modal.Title>
+        {props.header}
     </Modal.Header>
     <Modal.Body>{props.children}</Modal.Body>
     {/* <Modal.Footer> */}

@@ -4,8 +4,9 @@ import BookSelect from './bookforms/BookSelect';
 import BookDetails from './bookforms/BookDetails';
 import "./MultiStepForm.scss"
 import LocationSelectionForm from './bookforms/LocationSelect';
+import BookDetailedSelect from './bookforms/BookDetailedSelect';
 
-export default function MultiStepForm() {
+export default function MultiStepFormRequest() {
 
     const [step, setStep] = useState(0);
     const [values, setValues] = useState({
@@ -33,7 +34,7 @@ export default function MultiStepForm() {
     //fetch when grade is selected
     const [allBooks, setAllBooks] = useState({});
     const fetchBooks = async (grade) => {
-        const res = await fetch('http://localhost:5000/api/books/all?classLevel=' + grade);
+        const res = await fetch('http://localhost:5000/api/books/available?classLevel=' + grade + "&collectionPoint=");
         const data = await res.json();
         setAllBooks(data.books);
     }
@@ -51,7 +52,7 @@ export default function MultiStepForm() {
 
     //submit function
     const submit = async () => {
-        const res = await fetch('http://localhost:5000/api/transaction/donate', {
+        const res = await fetch('http://localhost:5000/api/transaction/request', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,9 +85,8 @@ export default function MultiStepForm() {
     return (
         <div id='bookform'>
             {step === 0 && <Education nextStep={nextStep} handleChange={handleChange} state={values} />}
-            {step === 1 && <BookSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
-            {step === 2 && <BookDetails nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} /> }
-            {step === 3 && <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} /> }
+            {step === 2 && <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} /> }
+            {step === 1 && <BookDetailedSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
         </div>
     )
 }

@@ -3,7 +3,7 @@ const Users = require('../../db/UserModel');
 
 function authenticateUser(req, res, next) {
   // Get the token from the request headers
-  const token = req.header('x-auth-token');
+  const token = req.header('x-auth-token') || req.body.token || req.query.token;
 
   if (!token) return res.status(401).json({ msg: 'No token was provided to the server: Could not authorize' });
 

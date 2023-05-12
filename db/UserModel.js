@@ -28,6 +28,12 @@ const UserSchema = new Schema({
     required: [true, "Please provide a city!"],
     unique: false,
   },
+  isVerifier: {
+    type: Boolean,
+    required: [false, "Please provide a isVerifier!"],
+    unique: false,
+    default: false,
+  },
   reviews: [
     {
       by: {

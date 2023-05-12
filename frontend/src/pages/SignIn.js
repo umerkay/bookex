@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login } from '../actions/user'
 import BasicModal from '../components/BasicModal';
+import { ButtonGroup, ToggleButton } from 'react-bootstrap';
+
 
 
 function UserSignin(props) {
@@ -13,6 +15,8 @@ function UserSignin(props) {
     email: '',
     password: ''
   });
+
+  const [toggle, setToggle] = useState(false);
 
   const { dispatch } = useUserContext();
 
@@ -32,8 +36,34 @@ function UserSignin(props) {
     navigate('/');
   }
 
+  //create signup signin toggle in bootstrap modal
+
   return (
-    <BasicModal show={props.show} handleClose={props.handleClose} title={"Sign In"} >
+    <BasicModal header={
+      <ButtonGroup className="mb-2">
+          <ToggleButton
+            id={`radio-1`}
+            type="radio"
+            variant="secondary"
+            name="radio"
+            checked={toggle}
+            onChange={(e) => setToggle(true)}
+          >
+            Sign Up
+          </ToggleButton>
+          <ToggleButton
+            id={`radio-2`}
+            type="radio"
+            variant="secondary"
+            name="radio"
+            checked={!toggle}
+            onChange={(e) => setToggle(false)}
+          >
+            Sign In
+          </ToggleButton>
+      </ButtonGroup>
+    } show={props.show} handleClose={props.handleClose} title={"Sign In"} >
+      
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email address</Form.Label>

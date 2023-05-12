@@ -52,7 +52,7 @@ const Navbar = (props) => {
 
         {isLoggedIn ? (
           <>
-            <span id='welcome' >Hello,<Link className="btn" to="/MyAccount"> 
+            <span id='welcome' >Hello,<Link className="btn" to="/Dashboard"> 
               <FaUserCircle />
             {user?.name}</Link></span>
             <button className="btn" onClick={() => window.confirm("Do you want to logout?") ? logout(dispatch) : null}>

@@ -5,17 +5,21 @@ import { getUserInfo } from './actions/user'
 import { useUserContext } from './hooks/userContextHook'
 import { useEffect, useState } from 'react'
 
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 //pages and componenets
 import Home from './pages/Home'
 import Navbar from './components/Navbar' 
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
-import MyAccount from './pages/MyAccount'
+import Dashboard from './pages/Dashboard'
 import MyProfile from './pages/MyProfile'
 import MyAddress from './pages/MyAddress'
 import Exchanges from './pages/Exchanges'
 import BasicModal from './components/BasicModal';
 import MultiStepForm from './components/MultiStepForm';
+import MultiStepFormRequest from './components/MultiStepFormRequest';
+import TransactionPage from './pages/TransactionPage';
 
 
 
@@ -47,13 +51,15 @@ function App() {
         <div className="pages">
           <Routes>
             <Route path="/" element={<Home/>} />
-            <Route path="/bookform" element={<MultiStepForm/>} />
+            <Route path="/donate" element={<MultiStepForm/>} />
+            <Route path="/request" element={<MultiStepFormRequest/>} />
             {/* <Route path="/signin" element={<SignIn/>} /> */}
             {/* <Route path="/signup" element={<SignUp/>} /> */}
-            <Route path="/MyAccount" element={<MyAccount/>} />
+            <Route path="/Dashboard" element={<Dashboard/>} />
             <Route path="/MyProfile" element={<MyProfile/>} />
             <Route path="/MyAddress" element={<MyAddress/>} />
-            <Route path="/Exchanges" element={<Exchanges/>} />          
+            <Route path="/Exchanges" element={<Exchanges/>} />
+            <Route path="/transaction/:id" element={<TransactionPage/>} />           
           </Routes>
         </div>
       </BrowserRouter> 

@@ -17,10 +17,14 @@ function Home() {
                 <div id="info">
                     <h1>Bookex Pakistan</h1>
                     <h2>For all your textbook needs</h2>
-                    <Link to={"/bookform"}>
+                    <Link to={"/donate"}>
                         <button className='btn btn-main'>Proceed with Book Submission</button>
                     </Link>
+                    <Link to={"/request"}>
+
                     <button className='btn btn-main'>Proceed with Book Request</button>
+                    </Link>
+                    
                     <img src={brandimg} id="brandimg" height="300" />
                 </div>
                 <div className="cards"></div>

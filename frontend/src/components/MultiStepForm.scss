@@ -1,0 +1,10 @@
+#bookform {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 60px);
+    > div {
+        width: 500px;
+    }
+}
