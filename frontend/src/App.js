@@ -20,6 +20,8 @@ import BasicModal from './components/BasicModal';
 import MultiStepForm from './components/MultiStepForm';
 import MultiStepFormRequest from './components/MultiStepFormRequest';
 import TransactionPage from './pages/TransactionPage';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 
 
@@ -53,6 +55,8 @@ function App() {
             <Route path="/" element={<Home/>} />
             <Route path="/donate" element={<MultiStepForm/>} />
             <Route path="/request" element={<MultiStepFormRequest/>} />
+            <Route path="/about" element={<About/>} />
+            <Route path="/contact" element={<Contact/>} />
             {/* <Route path="/signin" element={<SignIn/>} /> */}
             {/* <Route path="/signup" element={<SignUp/>} /> */}
             <Route path="/Dashboard" element={<Dashboard/>} />
