@@ -25,35 +25,59 @@ router.get('/', (req, res) => {
       });
   });
 
-//GET api for updating Incoming Books
+//GET api for Incoming Books details
 router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the incoming book in the database using the ID
+    const incomingBook = await IncomingBook.findById(id);
+
+    // If the incoming book doesn't exist, return an error
+    if (!incomingBook) {
+      return res.status(404).json({ error: "Incoming book not found" });
+    }
+
+    // Return the incoming book details as the API response
+    res.status(200).json({
+      success: true,
+      message: "Incoming book details retrieved successfully",
+      incomingBook,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving incoming book details" });
+  }
+});
+
+//PUT api for updating Incoming book details
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { isReceived, condition } = req.body;
 
   try {
-    // Find the IncomingBook in the database using the ID and update it
-    const incomingBook = await IncomingBook.findByIdAndUpdate(
+    // Find the incoming book in the database using the ID and update its details
+    const updatedIncomingBook = await IncomingBook.findByIdAndUpdate(
       id,
       { isReceived, condition },
       { new: true }
     );
 
-    // If the IncomingBook doesn't exist, return an error
-    if (!incomingBook) {
-      return res.status(404).json({ error: "IncomingBook not found" });
+    // If the incoming book doesn't exist, return an error
+    if (!updatedIncomingBook) {
+      return res.status(404).json({ error: "Incoming book not found" });
     }
 
-    // Return the updated IncomingBook as the API response
+    // Return the updated incoming book as the API response
     res.status(200).json({
       success: true,
-      message: "IncomingBook updated successfully",
-      incomingBook,
+      message: "Incoming book details updated successfully",
+      incomingBook: updatedIncomingBook,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error updating IncomingBook" });
+    res.status(500).json({ error: "Error updating incoming book details" });
   }
 });
-  
+
 //DELETE api for deleting Book instance
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;

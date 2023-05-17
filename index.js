@@ -6,7 +6,8 @@ const cors = require('cors')
 const Books = require('./routes/api/books');
 const Transactions = require('./routes/api/transaction');
 const TransactionsAdmin = require('./routes/api/admintransaction');
-const IncomingBooks = require('./routes/api/incomingbooks')
+const IncomingBooks = require('./routes/api/incomingbooks');
+const AdminBooks = require('./routes/api/adminbooks');
 const port = process.env.PORT || 5000;
 
 //database connection using env variables and dotenv
@@ -79,4 +80,5 @@ app.use('/api/users', Users);
 app.use('/api/books', Books);
 app.use('/api/transaction', Transactions);
 app.use('/api/admintransaction', TransactionsAdmin);
-app.use('/api/incomingbooks', IncomingBooks)
+app.use('/api/incomingbooks', IncomingBooks);
+app.use('/api/adminbooks', AdminBooks);
