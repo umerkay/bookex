@@ -15,16 +15,17 @@ function ImageUploadForm(props) {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    // <Form onSubmit={handleSubmit}>
       <Form.Group>
         <Form.Label>Upload Image</Form.Label>
         <Form.Control
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
+          required
         />
       </Form.Group>
-    </Form>
+    // </Form>
   );
 }
 

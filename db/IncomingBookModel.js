@@ -37,8 +37,8 @@ const bookSchema = new mongoose.Schema({
   },
   //image of book
   image: {
-    type: String,
-    required: [true, "Please provide image"],
+    type: Object,
+    required: false,
   },
 });
 

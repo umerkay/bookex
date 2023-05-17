@@ -17,7 +17,7 @@ function authenticateUser(req, res, next) {
     Users.findById(userId)
       .then(user => {
         if (!user) {
-          return res.status(401).json({ message: 'Unauthorized access2' });
+          return res.status(401).json({ message: 'User information invalid' });
         }
         req.user = user;
         next();
@@ -26,7 +26,7 @@ function authenticateUser(req, res, next) {
         res.status(500).json({ message: 'Error occurred', error: err });
       });
   } catch (err) {
-    res.status(401).json({ message: 'Unauthorized access1' });
+    res.status(401).json({ message: 'You were signed out' });
   }
 }
 

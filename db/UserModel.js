@@ -16,7 +16,7 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: [true, "Please provide a password!"],
-    unique: false,
+    unique: false, select: false
   },
   phonenumber: {
     type: Number,

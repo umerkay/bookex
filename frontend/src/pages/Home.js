@@ -25,7 +25,7 @@ function Home() {
                     <button className='btn btn-main'>Proceed with Book Request</button>
                     </Link>
                     
-                    <img src={brandimg} id="brandimg" height="300" />
+                    <img src={brandimg} id="brandimg" />
                 </div>
                 <div className="cards"></div>
             </div>

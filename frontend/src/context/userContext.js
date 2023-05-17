@@ -57,6 +57,12 @@ export const UserProvider = ({children}) => {
                     error: action.payload.error,
                     isLoading: false
                 }
+            case 'CLEAR_ERROR':
+                return {
+                    ...state,
+                    error: null
+                }
+
             default:
                 return state
         }

@@ -1,0 +1,10 @@
+.book-details {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    .img {
+        border-radius: 1rem;
+        width: 100px;
+        height: 100px;
+        background-size: cover !important;
+    }
+}

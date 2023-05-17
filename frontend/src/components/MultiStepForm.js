@@ -4,10 +4,12 @@ import BookSelect from './bookforms/BookSelect';
 import BookDetails from './bookforms/BookDetails';
 import "./MultiStepForm.scss"
 import LocationSelectionForm from './bookforms/LocationSelect';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import Spinner from './Spinner';
+import { useNavigate } from 'react-router-dom';
 
 export default function MultiStepForm() {
 
-    const [step, setStep] = useState(0);
     const [values, setValues] = useState({
         stream: '',
         grade: '',
@@ -31,9 +33,14 @@ export default function MultiStepForm() {
 
     //fetch allbooks from backend accoridng to route in api/books.js
     //fetch when grade is selected
-    const [allBooks, setAllBooks] = useState({});
+    const [allBooks, setAllBooks] = useState([]);
+    const [step, setStep] = useState(0);
+
+    const navigate = useNavigate();
+
+    const [submitting, setSubmitting] = useState(false);
     const fetchBooks = async (grade) => {
-        const res = await fetch('http://localhost:5000/api/books/all?classLevel=' + grade);
+        const res = await fetch('/api/books/all?classLevel=' + grade);
         const data = await res.json();
         setAllBooks(data.books);
     }
@@ -42,26 +49,58 @@ export default function MultiStepForm() {
     //make request to /api/transactions/donate
     //send all the data in values
     //also send token in header
-    
+
     //useeffect to fetch all books
     useEffect(() => {
-        if(values.grade === '') return;
+        if (values.grade === '') return;
         fetchBooks(values.grade);
-    }, [values.grade])
+    }, [values.grade]);
+
+    //check if signeo out then redirect to home
+    useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            navigate('/?signin=true');
+        }
+    }, []);
 
     //submit function
     const submit = async () => {
-        const res = await fetch('http://localhost:5000/api/transaction/donate', {
+        setStep(step + 1);
+
+        setSubmitting(true);
+
+        //create formdata object
+        const formData = new FormData();
+        formData.append('stream', values.stream);
+        formData.append('grade', values.grade);
+        formData.append('books', JSON.stringify(values.books.map(book => ({_id: book._id, condition: book.condition, classLevel: book.classLevel}))));
+        formData.append('collectionPoint', values.collectionPoint);
+        //append book image to formdata books: [{image: file}, {image: file}}]
+        values.books.forEach((book, index) => {
+            formData.append('files', book.image);
+        });
+
+        // formData.append('token', localStorage.getItem('token'));
+        // console.log(formData)
+
+        const res = await fetch('/api/transaction/donate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'x-auth-token': localStorage.getItem('token'),
+                // 'content-type': 'multipart/form-data'
             },
-            body: JSON.stringify({...values, token: localStorage.getItem('token')})
+            body: formData
         });
         const data = await res.json();
-        console.log(data);
+        // return;
+        // console.log(data);
+        setSubmitting(false);
+
+        //redirect to dashboard
+        navigate('/dashboard');
+
     }
-    
+
     //nextstep
     const nextStep = () => {
         setStep(step + 1);
@@ -81,12 +120,60 @@ export default function MultiStepForm() {
         // }
     }
 
+    //renderchild
+    const renderChild = (step, values, handleChange, nextStep, prevStep, submit, allBooks) => {
+        // {step === 0 && <Education nextStep={nextStep} handleChange={handleChange} state={values} />}
+        //     {step === 1 && <BookSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
+        //     {step === 2 && <BookDetails nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} />}
+        //     {step === 3 && <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} />}
+        switch (step) {
+            case 0:
+                return <Education nextStep={nextStep} handleChange={handleChange} state={values} allBooks={allBooks} />
+            case 1:
+                return <BookSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />
+            case 2:
+                return <BookDetails nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} />
+            case 3:
+                return <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} />
+        }
+    }
+
     return (
-        <div id='bookform'>
-            {step === 0 && <Education nextStep={nextStep} handleChange={handleChange} state={values} />}
-            {step === 1 && <BookSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
-            {step === 2 && <BookDetails nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} /> }
-            {step === 3 && <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} /> }
+        <div className='container'>
+            {/* <div id='bookform-brand'>
+                <h1>Donate Books</h1>
+            </div> */}
+
+            <div id='bookform'>
+                <div>
+
+                    <div class="progress" style={{ marginBottom: "1rem" }}>
+                        <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style={{ width: `${step / 4 * 100}%` }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    {/* <div style={{height: "100%"}}> */}
+                    {/* <TransitionGroup> */}
+                    {/* <CSSTransition */}
+                    {/* key={step}
+                    timeout={500}
+                    classNames="slide"
+                    mountOnEnter
+                    unmountOnExit */}
+                    {/* > */}
+                    {renderChild(step, values, handleChange, nextStep, prevStep, submit, allBooks)}
+                    {/* </CSSTransition> */}
+                    {/* </TransitionGroup> */}
+                    {/* </div> */}
+                    {
+                        submitting ? (
+                            <Spinner forceChildren loading={true}>
+                                <div style={{ height: '50vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <h1>Submitting...</h1>
+                                </div>
+                            </Spinner>
+                        ) : null
+                    }
+                </div>
+            </div>
         </div>
     )
 }
