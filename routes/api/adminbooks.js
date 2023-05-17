@@ -103,4 +103,39 @@ router.delete("/:id", async (req, res) => {
     }
   });
   
+//POST API for creating user
+router.post("/", async (req, res) => {
+    // try {
+      const { title, author, subject, classLevel } = req.body;
+  
+      // Validate the request body
+      if (!title || !author || !subject || !classLevel) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide title, author, subject, and class level."
+        });
+      }
+  
+      // Create a new Book instance
+      const newBook = new Books({
+        title,
+        author,
+        subject,
+        classLevel
+      });
+  
+      // Save the new Book to the database
+      const createdBook = await newBook.save();
+  
+      // Return the created Book as the API response
+      res.status(201).json({
+        success: true,
+        message: "Book created successfully",
+        book: createdBook
+      });
+    // } catch (error) {
+    //   res.status(500).json({ error: "Error creating Book" });
+    // }
+  });
+
 module.exports = router;
