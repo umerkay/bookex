@@ -25,4 +25,33 @@ router.get('/', (req, res) => {
       });
   });
 
+//PUT api for updating Incoming Books
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { isReceived, condition } = req.body;
+
+  try {
+    // Find the IncomingBook in the database using the ID and update it
+    const incomingBook = await IncomingBook.findByIdAndUpdate(
+      id,
+      { isReceived, condition },
+      { new: true }
+    );
+
+    // If the IncomingBook doesn't exist, return an error
+    if (!incomingBook) {
+      return res.status(404).json({ error: "IncomingBook not found" });
+    }
+
+    // Return the updated IncomingBook as the API response
+    res.status(200).json({
+      success: true,
+      message: "IncomingBook updated successfully",
+      incomingBook,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error updating IncomingBook" });
+  }
+});
+  
 module.exports = router;
