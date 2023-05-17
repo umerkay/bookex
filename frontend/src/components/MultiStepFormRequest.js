@@ -5,6 +5,8 @@ import BookDetails from './bookforms/BookDetails';
 import "./MultiStepForm.scss"
 import LocationSelectionForm from './bookforms/LocationSelect';
 import BookDetailedSelect from './bookforms/BookDetailedSelect';
+import { useNavigate } from 'react-router-dom';
+import Spinner from './Spinner';
 
 export default function MultiStepFormRequest() {
 
@@ -32,9 +34,12 @@ export default function MultiStepFormRequest() {
 
     //fetch allbooks from backend accoridng to route in api/books.js
     //fetch when grade is selected
-    const [allBooks, setAllBooks] = useState({});
+    const [allBooks, setAllBooks] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
+    const navigate = useNavigate();
+
     const fetchBooks = async (grade) => {
-        const res = await fetch('http://localhost:5000/api/books/available?classLevel=' + grade + "&collectionPoint=");
+        const res = await fetch('/api/books/available?classLevel=' + grade + "&collectionPoint=" + values.collectionPoint);
         const data = await res.json();
         setAllBooks(data.books);
     }
@@ -43,26 +48,43 @@ export default function MultiStepFormRequest() {
     //make request to /api/transactions/donate
     //send all the data in values
     //also send token in header
-    
+
     //useeffect to fetch all books
     useEffect(() => {
-        if(values.grade === '') return;
+        if (values.grade === '' || values.stream === '') {
+            setAllBooks([]);
+        };
+
         fetchBooks(values.grade);
-    }, [values.grade])
+    }, [values.grade, values.stream])
+
+    //check if signeo out then redirect to home
+    useEffect(() => {
+        if (!localStorage.getItem('token')) {
+            navigate('/?signin=true');
+        }
+    }, []);
 
     //submit function
     const submit = async () => {
+        setStep(step + 1);
+
+        setSubmitting(true);
+
         const res = await fetch('http://localhost:5000/api/transaction/request', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({...values, token: localStorage.getItem('token')})
+            body: JSON.stringify({ ...values, token: localStorage.getItem('token') })
         });
         const data = await res.json();
         console.log(data);
+        setSubmitting(false);
+        navigate('/dashboard');
+
     }
-    
+
     //nextstep
     const nextStep = () => {
         setStep(step + 1);
@@ -83,10 +105,28 @@ export default function MultiStepFormRequest() {
     }
 
     return (
-        <div id='bookform'>
-            {step === 0 && <Education nextStep={nextStep} handleChange={handleChange} state={values} />}
-            {step === 2 && <LocationSelectionForm nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} /> }
-            {step === 1 && <BookDetailedSelect nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
+        <div className='container'>
+
+            <div id='bookform'>
+                <div>
+                <div class="progress" style={{ marginBottom: "1rem" }}>
+                    <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style={{ width: `${step / 3 * 100}%` }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                {step === 1 && <Education nextStep={nextStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
+                {step === 0 && <LocationSelectionForm nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} />}
+                {step === 2 && <BookDetailedSelect nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
+                
+            {
+                submitting ? (
+                    <Spinner forceChildren loading={true}>
+                        <div style={{ height: '50vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <h1>Submitting...</h1>
+                        </div>
+                    </Spinner>
+                ) : null
+            }
+            </div>
+            </div>
         </div>
     )
 }

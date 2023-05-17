@@ -13,7 +13,6 @@ router.post('/register', (request, response) => {
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
       // create a new user instance and collect the data
-      console.log(request.body)
       const user = new Users({
         name: request.body.name,
         email: request.body.email,
@@ -35,16 +34,15 @@ router.post('/register', (request, response) => {
         // catch error if the new user wasn't added successfully to the database
         .catch((error) => {
           response.status(500).send({
-            message: "Error creating user",
+            message: error.keyValue.email ? "Email already exists" : "Phone number already exists",
             error,
           });
         });
     })
     // catch error if the password hash isn't successful
     .catch((e) => {
-      console.log(e);
       response.status(500).send({
-        message: "Password was not hashed successfully",
+        message: "There was an error creating this user :(",
         e,
       });
     });
@@ -58,9 +56,9 @@ router.post('/user', authenticateUser, (request, response) => {
 });
 
 // login endpoint
-router.post("/login", (request, response) => {
+router.post("/login", async (request, response) => {
   // check if email exists
-  Users.findOne({ email: request.body.email })
+  Users.findOne({ email: request.body.email }).select("password")
 
     // if email exists
     .then((user) => {
@@ -69,7 +67,7 @@ router.post("/login", (request, response) => {
         .compare(request.body.password, user.password)
 
         // if the passwords match
-        .then((passwordCheck) => {
+        .then(async (passwordCheck) => {
 
           // check if password matches
           if (!passwordCheck) {
@@ -88,11 +86,10 @@ router.post("/login", (request, response) => {
             "RANDOM-TOKEN",
             { expiresIn: "24h" }
           );
-
           //   return success response
           response.status(200).send({
             message: "Login Successful",
-            user,
+            user: await Users.findById(user._id),
             token,
           });
         })

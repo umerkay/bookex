@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form';
+import './BookSelect.scss';
 
 export default function BookDetailedSelect(props) {
 
@@ -41,21 +42,31 @@ export default function BookDetailedSelect(props) {
                         let isSelected = (selectedBooks.find(b => b._id === book._id)) ? true : false;
                         //in checked prop, check if _id of book is in selectedBooks array
                         return (<>
-                        <Form.Check
-                            key={index}
-                            type='checkbox'
-                            label={book.bookID.title}
-                            name={book._id}
-                            value={book._id}
-                            checked={isSelected}
-                            onChange={e => (e.target.checked) ? selectBook(book) : deselectBook(book)}
-                        />
-                        <span>Condition: {book.condition}</span></>
-                    )})}
+                            <Form.Check
+                                key={index}
+                                type='checkbox'
+                                label={book.bookID.title}
+                                name={book._id}
+                                value={book._id}
+                                checked={isSelected}
+                                onChange={e => (e.target.checked) ? selectBook(book) : deselectBook(book)}
+                            />
+                            <div className='book-details'>
+                                <div className='img' style={{background: "url(" + book.image + ")"}}></div>
+                                {/* <img src={book.image}></img> */}
+                                <div className='details'>
+                                    <span>Condition: {book.condition}</span>
+                                    <span>Location: {book.collectionPoint}</span>
+                                </div>
+                            </div></>
+                        )
+                    })}
                 </Form.Group>
 
-                <input type='submit' className='btn btn-main' value='Next' />
-
+                <div className='flex'>
+                    <button className='btn btn-main' onClick={props.prevStep}>Back</button>
+                    <input type='submit' className='btn btn-main' value='Next' />
+                </div>
             </Form>
 
 

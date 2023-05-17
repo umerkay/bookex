@@ -1,0 +1,93 @@
+@media screen and (max-width: 1000px) {
+    .transaction {
+        .tags {
+            flex-direction: column;
+            align-items: flex-start !important;
+            .tr {
+                flex-direction: column;
+            }
+        }
+
+    }
+    
+}
+
+.transaction {
+    width: 100%;
+    background: rgb(2,105,106);
+    background: linear-gradient(101deg, rgba(2,105,106,1) 0%, rgba(6,115,101,1) 88%);
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.099);
+    transition-duration: 200ms;
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: left;
+    text-decoration: none;
+    color: rgb(36, 36, 36);
+    color: white;
+    font-weight: bold;
+    position: relative;
+    min-height: 180px;
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    .user {
+        display: flex;
+        gap: 1rem;
+        span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+    &.detailed {
+        min-height: unset;
+    }
+    .message {
+        font-size: 2rem;
+        font-weight: normal;
+        padding: 2rem;
+        padding-top: 1rem;
+    }
+    .tags {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+        align-items: center;
+        height: min-content;
+        .tr {
+            display: flex;
+            text-align: left;
+            min-width: 200px;
+            gap: 1rem;
+            >div {
+                display: flex;
+                gap: 0.25rem;
+                align-items: center;
+            }
+            // justify-content: flex-end;
+        }
+    }
+    &:hover {
+        box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.199);
+        transition-duration: 200ms;
+    }
+    .status {
+        background-color: white;
+        border-radius: 100rem;
+        padding: 0.25rem 1rem;
+        width: min-content;
+        height: min-content;
+    }
+    .details {
+        
+        background-color: white;
+        border-radius: 100rem;
+        padding: 0.25rem 1rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        color: black;
+        text-decoration: none !important;
+        
+    }
+}

@@ -7,6 +7,7 @@ const Books = require('./routes/api/books');
 const Transactions = require('./routes/api/transaction');
 const port = process.env.PORT || 5000;
 
+
 //database connection using env variables and dotenv
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -32,6 +33,7 @@ connection.once('open', () => {
 
 app.use(cors());
 
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -39,3 +41,5 @@ app.use(express.json());
 app.use('/api/users', Users);
 app.use('/api/books', Books);
 app.use('/api/transaction', Transactions);
+
+app.use('/uploads', express.static('uploads'))

@@ -45,6 +45,7 @@ export default function BookDetails(props) {
                                         books[index].condition = e.target.value;
                                         updateBooks();
                                     }}
+                                    required
                                 />
                             </Form.Group>
                             <ImageUploadForm setFile={
@@ -56,7 +57,11 @@ export default function BookDetails(props) {
                         </div>
                     );
                 })}
+                <div className='flex flex-center' style={{marginTop: "1rem"}}>
+
+                <button className='btn btn-main' onClick={props.prevStep}>Back</button>
                 <input type='submit' className='btn btn-main' value='Next' />
+                </div>
             </Form>
 
         </div>

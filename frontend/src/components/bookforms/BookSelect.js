@@ -52,8 +52,12 @@ export default function BookSelect(props) {
                     )})}
                 </Form.Group>
 
-                <input type='submit' className='btn btn-main' value='Next' />
+                <div className='flex'>
+                
+                <button className='btn btn-main' onClick={props.prevStep}>Back</button>
 
+                <input type='submit' disabled={selectedBooks.length === 0} className='btn btn-main' value='Next' />
+                            </div>
             </Form>
 
 

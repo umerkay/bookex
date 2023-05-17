@@ -13,6 +13,13 @@
   }
 }
 
+.flex {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -22,6 +29,22 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+body:has(#bookform), body:has(#about), body:has(#contactus) {
+  background-color:rgb(0, 94, 78);
+  background: url("./components/Simple Shiny.svg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.flex-center {
+  justify-content: center;
+  align-items: center;
+}
+
+#about, #contactus {
+  color: white;
+  font-weight: bold;
 }
 
 .App-link {

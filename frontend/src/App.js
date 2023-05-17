@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import {BrowserRouter, Routes, Route, useParams} from 'react-router-dom'
 import React from 'react';
 import { getUserInfo } from './actions/user'
 import { useUserContext } from './hooks/userContextHook'
@@ -22,6 +22,7 @@ import MultiStepFormRequest from './components/MultiStepFormRequest';
 import TransactionPage from './pages/TransactionPage';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 
 
@@ -29,7 +30,10 @@ function App() {
 
   const {dispatch, token} = useUserContext();
   
-  const [showSignInModal, setShowSignInModal] = useState(false);
+  //use params to see if signin is true
+  //if it is, show sign in modal
+
+  const [showSignInModal, setShowSignInModal] = useState();
 
   const handleCloseSM = () => setShowSignInModal(false);
   const handleShowSM = () => setShowSignInModal(true);
@@ -61,8 +65,9 @@ function App() {
             {/* <Route path="/signup" element={<SignUp/>} /> */}
             <Route path="/Dashboard" element={<Dashboard/>} />
             <Route path="/MyProfile" element={<MyProfile/>} />
-            <Route path="/MyAddress" element={<MyAddress/>} />
-            <Route path="/Exchanges" element={<Exchanges/>} />
+            {/* <Route path="/MyAddress" element={<MyAddress/>} /> */}
+            {/* <Route path="/Exchanges" element={<Exchanges/>} /> */}
+            <Route path="/404" element={<NotFound/>} />
             <Route path="/transaction/:id" element={<TransactionPage/>} />           
           </Routes>
         </div>

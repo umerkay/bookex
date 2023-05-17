@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useUserContext } from "../hooks/userContextHook";
 import { logout } from "../actions/user";
 import "./navbar.scss"
@@ -6,11 +6,21 @@ import logo from "./logo.png"
 import {
   FaUserCircle,
   FaSignOutAlt,
-}from "react-icons/fa";
+} from "react-icons/fa";
+import { useEffect } from 'react';
+
 
 const Navbar = (props) => {
 
-  const { isLoggedIn, user, dispatch } = useUserContext()
+  const { isLoggedIn, user, dispatch, token } = useUserContext();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("signin")) {
+      props.handleShowSM();
+    }
+  }, [searchParams]);
+
 
   return (
     <nav className="navbar navbar-expand-lg bg-light">
@@ -29,14 +39,31 @@ const Navbar = (props) => {
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/contact">Contact Us</Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/registerschool">Become a Partner School</Link>
-            </li>
+            </li> */}
           </ul>
           {/* <form className="d-flex" role="search">
               <input className="form-control me-2" type="search" placeholder="Search books here" aria-label="Search" />
               <button className="btn btn-outline-success" type="submit">Search</button>
             </form> */}
+
+          {isLoggedIn ? (
+            <>
+              <span id='welcome' >Hello,<Link className="btn" to="/Dashboard">
+                <FaUserCircle />
+                {user?.name}</Link></span>
+              <button className="btn" onClick={() => window.confirm("Do you want to logout?") ? logout(token, dispatch) : null}>
+                <FaSignOutAlt />
+              </button>
+
+
+            </>
+          ) : (
+            <button className="btn btn-main" onClick={props.handleShowSM}>
+              Sign In
+            </button>
+          )}
         </div>
         {/* <div className="userInfo">
             {isLoggedIn ? <h2 >Welcome {user?.name}</h2> : null}
@@ -49,23 +76,6 @@ const Navbar = (props) => {
             <Link className="btn" to="/MyAccount">myAccount</Link>
             ) : null}
           </div> */}
-
-        {isLoggedIn ? (
-          <>
-            <span id='welcome' >Hello,<Link className="btn" to="/Dashboard"> 
-              <FaUserCircle />
-            {user?.name}</Link></span>
-            <button className="btn" onClick={() => window.confirm("Do you want to logout?") ? logout(dispatch) : null}>
-              <FaSignOutAlt />
-            </button>
-
-            
-          </>
-        ) : (
-          <button className="btn btn-main" onClick={props.handleShowSM}>
-            Sign In
-          </button>
-        )}
 
 
         {/* <li className="nav-item">

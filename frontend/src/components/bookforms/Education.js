@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-bootstrap/Form';
+import Spinner from '../Spinner';
 
 export default function Education(props) {
     //take input of stream between fsc and cambridge
@@ -7,7 +8,7 @@ export default function Education(props) {
     //take input of alevels or olevels grade for cambridge
 
     console.log(props)
-    const { state } = props;
+    const { state, allBooks } = props;
     const { stream, grade } = state;
 
     const handleChange = e => {
@@ -43,7 +44,7 @@ export default function Education(props) {
                     {stream === 'fsc' ? (
                         <>
                             <Form.Label>Grade</Form.Label>
-                            <Form.Control as="select" name="grade" value={grade} onChange={handleChange}>
+                            <Form.Control required as="select" name="grade" value={grade} onChange={handleChange}>
                                 <option value=''>Select Grade</option>
                                 <option value='9'>9</option>
                                 <option value='10'>10</option>
@@ -52,7 +53,7 @@ export default function Education(props) {
                             </Form.Control></>
                     ) : (<>
                         <Form.Label>Grade</Form.Label>
-                        <Form.Control as="select" name="grade" value={grade} onChange={handleChange}>
+                        <Form.Control required as="select" name="grade" value={grade} onChange={handleChange}>
                             <option value=''>Select Grade</option>
                             <option value='O Level'>O Levels</option>
                             <option value='A Level'>A Levels</option>
@@ -61,7 +62,10 @@ export default function Education(props) {
 
                 </Form.Group>
 
-                <input type='submit' className='btn btn-main' value='Next' />
+                    <Spinner forceChildren loading={(grade && stream && (!allBooks || allBooks.length == 0))}>
+                    <input type='submit' disabled={!allBooks || allBooks.length == 0} className='btn btn-main' value='Next'/>
+
+                    </Spinner>
 
             </Form>
 

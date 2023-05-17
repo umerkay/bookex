@@ -1,42 +1,10 @@
 import axios from 'axios';
 
-// export const login = async function (formData, dispatch, callback) {
-//     dispatch({type: 'LOADING'});
-//     try {
-//         const response = await fetch('http://localhost:5000/api/users/login', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(formData)
-//         });
-//         const data = await response.json();
-//         if (response.status === 200) {
-//             const token = data.token;
-//             // Store the token in the browser's local storage
-//             localStorage.setItem('authToken', token);
-//             // Pass the token in the Authorization header of subsequent requests
-//             const authHeader = { 'Authorization': token };
-//             const response = await fetch('http://localhost:5000/api/yourEndpoint', {
-//                 method: 'GET',
-//                 headers: authHeader
-//             });
-//             const data = await response.json();
-//             dispatch({type: 'LOGIN', payload: {user: { email: data.email, name: data.name }, token: data.token}});
-//             callback();
-//         } else {
-//             dispatch({type: 'ERROR', payload: {error: data.message}});
-//         }
-//     } catch (error) {
-//         dispatch({type: 'ERROR', payload: {error: error.message}});
-//     }
-// }
-
-export const login = async function (formData, dispatch, callback) {
+export const login = async function (formData, dispatch) {
 
     dispatch({type: 'LOADING'});
     try {
-        const response = await fetch('http://localhost:5000/api/users/login', {
+        const response = await fetch('/api/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +14,8 @@ export const login = async function (formData, dispatch, callback) {
         const data = await response.json();
         if (response.status === 200) {
             dispatch({type: 'LOGIN', payload: {user: data.user, token: data.token}});
-            callback();
+            return true;
+            // callback();
         } else {
             dispatch({type: 'ERROR', payload: {error: data.message}});
         }
@@ -63,7 +32,7 @@ export const getUserInfo = async function (token, dispatch) {
     dispatch({type: 'LOADING'});
     try {
 
-        const response = await fetch('http://localhost:5000/api/users/user', {
+        const response = await fetch('/api/users/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -89,7 +58,7 @@ export const register = async function (formData, dispatch) {
     
     dispatch({type: 'LOADING'});
     try {
-        const response = await fetch('http://localhost:5000/api/users/register', {
+        const response = await fetch('/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -99,6 +68,7 @@ export const register = async function (formData, dispatch) {
         const data = await response.json();
         if (response.status === 201) {
             dispatch({type: 'REGISTER', payload: {token: data.token}});
+            return true;
         } else {
             dispatch({type: 'ERROR', payload: {error: data.message}});
         }
@@ -110,14 +80,17 @@ export const register = async function (formData, dispatch) {
 
 }
 
-export const logout = async function (dispatch) {
-    fetch('http://localhost:5000/api/users/logout', {
+export const logout = async function (token, dispatch) {
+    fetch('/api/users/logout', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'x-auth-token': token
         }
     });
     dispatch({type: 'LOGOUT'})
+    //reidrect to home
+    
 }
 
 

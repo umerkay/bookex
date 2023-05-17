@@ -26,7 +26,7 @@ router.get('/available', (req, res) => {
   const query = req.query;
   if (query.classLevel) {
     console.log(query.classLevel)
-      IncomingBooks.find({'classLevel': query.classLevel, 'isReceived': true })
+      IncomingBooks.find({'classLevel': query.classLevel, 'isReceived': true, collectionPoint: query.collectionPoint })
           .then((books) => {
               res.status(200).json({  message: "Books found", books: books });
           })
