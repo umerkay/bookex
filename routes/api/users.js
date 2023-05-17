@@ -58,21 +58,21 @@ router.post('/user', authenticateUser, (request, response) => {
 });
 
 
-router.get('/:id', (req, response) => {
-  Users.findById(req.params.id)
-    .then((user) => {
-      response.status(200).send({
-        id: user._id,
-        ...user._doc
-      });
-    })
-    .catch((error) => {
-      response.status(500).send({
-        message: "Error retrieving user",
-        error,
-      });
-    });
-});
+// router.get('/:id', (req, response) => {
+//   Users.findById(req.params.id)
+//     .then((user) => {
+//       response.status(200).send({
+//         id: user._id,
+//         ...user._doc
+//       });
+//     })
+//     .catch((error) => {
+//       response.status(500).send({
+//         message: "Error retrieving user",
+//         error,
+//       });
+//     });
+// });
 
 
 
@@ -202,6 +202,25 @@ router.get('/', (req, response) => {
     });
 });
 
+//GET API to retrieve User Details
+router.get('/:id', (req, response) => {
+  Users.findById(req.params.id)
+    .then((user) => {
+      response.status(200).send({
+        id: user._id,
+        ...user._doc
+      });
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error retrieving user",
+        error,
+      });
+    });
+});
+
+
+//PUT API to update user on admin panel
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { name, email, phonenumber, city } = req.body;
