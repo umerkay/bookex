@@ -1,16 +1,18 @@
 import React from "react";
 import { Container, Row, Col, Image } from "react-bootstrap";
+import "./About.scss"
 
 const About = () => {
   return (
-    <div id="about" style={{
+    <div className="container" id="about" style={{
       // backgroundImage: `url(${process.env.PUBLIC_URL}/bg7.jpg)`,
       // backgroundSize: 'cover',
       // backgroundPosition: 'center',
       // minHeight: '160vh'
+      maxWidth: "1000px",
       height: '100vh'
     }}>
-      <Container style={{ paddingTop: '70px' }}>
+      {/* <Container style={{ paddingTop: '70px' }}> */}
         <div>
           <h2> For Students, By Students </h2>
           <p style={{ paddingTop: '80px', textAlign: 'center' }}>Bookex is a web application that allows students to exchange educational books with each other. The platform focuses on providing access to textbooks, reference books, and study guides for classes 9, 10, 11, 12, and O and A Levels, and automates the book exchange process to make it easier and more efficient.</p>
@@ -32,7 +34,7 @@ const About = () => {
 
           <p style={{ paddingTop: '70px' }}>Bookex was created by a team of three students from the National University of Sciences and Technology (NUST) in Islamabad, Pakistan.</p>
         </div>
-      </Container>
+      {/* </Container> */}
     </div>
   )
 }

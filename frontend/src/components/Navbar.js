@@ -1,4 +1,4 @@
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useUserContext } from "../hooks/userContextHook";
 import { logout } from "../actions/user";
 import "./navbar.scss"
@@ -6,6 +6,7 @@ import logo from "./logo.png"
 import {
   FaUserCircle,
   FaSignOutAlt,
+  FaCog,
 } from "react-icons/fa";
 import { useEffect } from 'react';
 
@@ -14,12 +15,18 @@ const Navbar = (props) => {
 
   const { isLoggedIn, user, dispatch, token } = useUserContext();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchParams.get("signin")) {
       props.handleShowSM();
     }
   }, [searchParams]);
+
+  const signoutUser = () => {
+    logout(token, dispatch);
+    navigate('/');
+  }
 
 
   return (
@@ -36,9 +43,9 @@ const Navbar = (props) => {
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/about">About</Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/contact">Contact Us</Link>
-            </li>
+            </li> */}
             {/* <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/registerschool">Become a Partner School</Link>
             </li> */}
@@ -53,11 +60,13 @@ const Navbar = (props) => {
               <span id='welcome' >Hello,<Link className="btn" to="/Dashboard">
                 <FaUserCircle />
                 {user?.name}</Link></span>
-              <button className="btn" onClick={() => window.confirm("Do you want to logout?") ? logout(token, dispatch) : null}>
+              <button className="btn" onClick={() => window.confirm("Do you want to logout?") ? signoutUser() : null}>
                 <FaSignOutAlt />
               </button>
-
-
+              <Link to={"/MyProfile"} style={{color: "black", textDecoration: "none"}}>
+                <FaCog />
+              </Link>
+              
             </>
           ) : (
             <button className="btn btn-main" onClick={props.handleShowSM}>

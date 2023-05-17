@@ -40,6 +40,11 @@ const bookSchema = new mongoose.Schema({
     type: Object,
     required: false,
   },
+  hasBeenReviewed: {
+    type: Boolean,
+    required: false,
+    default: false,
+  }
 });
 
 // This middleware is executed before every 'find' query on the book model. It populates the 'requests' and 'provisions' fields with
@@ -57,6 +62,7 @@ const bookSchema = new mongoose.Schema({
 //pre to populate bookid field with book
 bookSchema.pre('find', function (next) {
   this.populate('bookID');
+  this.populate('userID');
   next();
 });
 

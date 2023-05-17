@@ -36,18 +36,14 @@ const UserSchema = new Schema({
   },
   reviews: [
     {
-      by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserModel",
-      },
-      description: String,
       rating: Number,
-      transactionID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "MatchedTransactionModel",
-      },
+      review: String
     },
   ],
+  message: {
+    type: String, 
+    required: false
+  }
 }, { timestamps: true });
 
 // Create a model from the schema

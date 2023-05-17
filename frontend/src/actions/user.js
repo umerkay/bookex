@@ -89,19 +89,59 @@ export const logout = async function (token, dispatch) {
         }
     });
     dispatch({type: 'LOGOUT'})
-    //reidrect to home
     
+}
+//post to /api/users/updatedetails
+
+export const updateDetails = async function (updates, token, dispatch) {
+    dispatch({type: 'LOADING'});
+    try {
+        const response = await fetch('/api/users/updatedetails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            },
+            body: JSON.stringify(updates)
+        });
+        const data = await response.json();
+        if (response.status === 200) {
+            dispatch({type: 'UPDATE_DETAILS', payload: {user: data.user}});
+            return true;
+        } else {
+            dispatch({type: 'ERROR', payload: {error: data.message}});
+        }
+    } catch (error) {
+        dispatch({type: 'ERROR', payload: {error: error.message}});
+    }
+}
+
+//function OKMessage to /api/users/okmessage
+
+export const okMessage = async function (token, dispatch) {
+    dispatch({type: 'LOADING'});
+    try {
+        const response = await fetch('/api/users/okmessage', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            }
+        });
+        const data = await response.json(); 
+        if (response.status === 200) {
+            dispatch({type: 'UPDATE_DETAILS', payload: {user: data.user}});
+            return true;
+        } else {
+
+            dispatch({type: 'ERROR', payload: {error: data.message}});
+        }
+    } catch (error) {
+        dispatch({type: 'ERROR', payload: {error: error.message}});
+    }
 }
 
 
-export const updateUser = async (userId, updates, dispatch) => {
-  try {
-    const res = await axios.patch(`/api/users/${userId}`, updates);
-    dispatch({ type: 'UPDATE_USER', payload: res.data });
-  } catch (error) {
-    throw new Error(error.response.data.message || 'Failed to update user');
-  }
-};
 
 export const createAddress = async (userId, newAddress, dispatch) => {
   try {

@@ -1,13 +1,36 @@
+// body:has(#dashboard) {
+//     background-color: rgb(0, 0, 0, 0.03);
+// }
 #dashboard {
-    margin-top: 80px;
+    // margin-top: 80px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     max-width: 1000px;
     padding: 1rem;
+    padding-top: 80px;
     width: 100%;
+    position: relative;
+    min-height: calc(100vh - 50px);
+    // background-color: ;
+    border-radius: 1rem;
     .header {
         width: 100%;
         text-align: left;
+    }
+    .img {
+        position: absolute;
+        bottom: 0px;
+        overflow-y: hidden;
+        height: 300px;
+        width: 300px;
+        display: flex;
+        justify-content: center;
+
+        img {
+            position: absolute;
+            top: 0px;
+        }
+
     }
 }

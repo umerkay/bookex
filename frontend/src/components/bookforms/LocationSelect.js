@@ -20,24 +20,24 @@ function LocationSelectionForm(props) {
             ]
         },
         {
-            id: 2, name: 'Lahore', latitude: 31.5204, longitude: 74.3587, collectionPoints: [
-                { id: 4, name: 'Lahore Grammar School', latitude: 31.5204, longitude: 74.3587 },
-                { id: 5, name: 'Beaconhouse School System', latitude: 31.5204, longitude: 74.3587 },
-                { id: 6, name: 'Lahore College of Arts and Sciences', latitude: 31.5204, longitude: 74.3587 },
+            id: 2, name: 'Lahore', latitude: 31.52935204229024, longitude: 74.33706563308519  , collectionPoints: [
+                { id: 4, name: 'Lahore Grammar School Johar Town Campus', latitude: 31.461386841955427, longitude: 74.28140686082945 },
+                { id: 5, name: 'Beaconhouse School System', latitude: 31.46727212899114,  longitude: 74.31947620383356  },
+                { id: 6, name: 'Lahore College of Arts and Sciences', latitude: 31.47379423660845, longitude:  74.28121433645886 },
             ]
         },
         {
-            id: 3, name: 'Karachi', latitude: 24.8607, longitude: 67.0011, collectionPoints: [
-                { id: 7, name: 'Karachi Grammar School', latitude: 24.8607, longitude: 67.0011 },
-                { id: 8, name: 'Beaconhouse School System', latitude: 24.8607, longitude: 67.0011 },
-                { id: 9, name: 'Karachi American School', latitude: 24.8607, longitude: 67.0011 },
+            id: 3, name: 'Karachi', latitude: 24.883168912576007,  longitude:66.97937921655397, collectionPoints: [
+                { id: 7, name: 'Karachi Grammar School', latitude: 24.961859021227983,  longitude: 67.07321862853824 },
+                { id: 8, name: 'Beaconhouse School System', latitude: 24.95496605770426, longitude:  67.0443792593025},
+                { id: 9, name: 'Karachi American School', latitude: 24.885591565961715,  longitude: 67.08664310706033 },
             ]
         },
         {
-            id: 4, name: 'Peshawar', latitude: 34.0151, longitude: 71.5249, collectionPoints: [
-                { id: 10, name: 'Peshawar Grammar School', latitude: 34.0151, longitude: 71.5249 },
-                { id: 11, name: 'Beaconhouse School System', latitude: 34.0151, longitude: 71.5249 },
-                { id: 12, name: 'Peshawar College of Arts and Sciences', latitude: 34.0151, longitude: 71.5249 },
+            id: 4, name: 'Peshawar', latitude: 34.0227236392623,longitude: 71.51464142321672, collectionPoints: [
+                { id: 10, name: 'Peshawar Grammar School', latitude: 33.99421142042145,  longitude:71.50073774320818},
+                { id: 11, name: 'Beaconhouse Primary Campus Peshawar', latitude:34.026699261638306, longitude:  71.54232498194601 },
+                { id: 12, name: 'The City College of Arts and Science', latitude: 34.02753913677442,  longitude: 71.57888879503116},
             ]
         },
     ]
@@ -152,10 +152,11 @@ function LocationSelectionForm(props) {
                     )}
                 </Map>
                 <div className='flex buttonholder'>
-                    <Link to={selectedLocation?.link} disabled={!selectedLocation} target='_blank' className='btn btn-main'>
+                    <Link disabled={!selectedLocation} to={`https://www.google.com/maps/search/${selectedLocation?.name.split(" ").join("+")}/${selectedLocation?.latitude},${selectedLocation?.longitude},15z`} disabled={!selectedLocation} target='_blank' className='btn btn-main'>
                         <span>Map <FaExternalLinkAlt></FaExternalLinkAlt> </span>
                     </Link>
-                    <button className='btn btn-main' onClick={props.prevStep}>Back</button>
+                    {props.prevStep && <button className='btn btn-main' onClick={props.prevStep}>Back</button>}
+                    {/* <button className='btn btn-main' onClick={props.prevStep}>Back</button> */}
                     <input type='submit' className='btn btn-main' value='Next' />
                 </div>
             </Form>

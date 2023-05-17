@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../../db/UserModel');
 const authenticateUser = require('./auth');
+const IncomingBookModel = require('../../db/IncomingBookModel');
 
 //routes
 //resgister endpoint
@@ -54,6 +55,71 @@ router.post('/user', authenticateUser, (request, response) => {
     user: request.user
   });
 });
+
+//reviewincomingbook/:id find incoming book and review the owner of it with rating and review
+
+router.post('/reviewincomingbook/:id', authenticateUser, (request, response) => {
+  IncomingBookModel.findById(request.params.id)
+
+    .then((book) => {
+      console.log(request.user._id, book.userID)
+      if (!request.user._id.equals(book.userID)) return response.status(400).send({ msg: "You can't review this book" });
+      if(book.hasBeenReviewed) return response.status(400).send({ msg: "You have already reviewed this book" });
+
+      Users.findById(book.userID)
+          .then((user) => {
+            user.reviews.push({ review: request.body.review, rating: request.body.rating });
+            book.hasBeenReviewed = true;
+            book.save();
+            user.save()
+              .then((user) => {
+                response.status(200).send({
+                  message: "Review added",
+                });
+              })
+              .catch((error) => {
+                response.status(500).send({
+                  message: "Error adding review",
+                  error,
+                });
+              });
+          })
+          .catch((error) => {
+            response.status(500).send({
+              message: "Error finding user",
+              error,
+            });
+          });
+
+    })
+    // .catch((error) => {
+    //   response.status(500).send({
+    //     message: "Error finding book",
+    //     error,
+    //   });
+    // });
+});
+
+
+//route /okmessage to clear user.message
+router.get('/okmessage', authenticateUser, (request, response) => {
+  Users.findByIdAndUpdate(request.user._id, { message: "" })
+
+    .then((user) => {
+      user.message = "";
+      response.status(200).send({
+        message: "Message cleared",
+        user: user
+      });
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error clearing message",
+        error,
+      });
+    });
+});
+
 
 
 // router.get('/:id', (req, response) => {
@@ -130,6 +196,36 @@ router.post("/login", async (request, response) => {
 }
 );
 
+router.post("/updatedetails", authenticateUser, (request, response) => {
+
+  Users.findById(request.user._id)
+    .then((user) => {
+      user.name = request.body.name;
+      user.phonenumber = request.body.phonenumber;
+      user.city = request.body.city;
+      user.save()
+        .then((result) => {
+          response.status(200).send({
+            message: "User Updated Successfully",
+            user: result,
+          });
+        })
+        .catch((error) => {
+          response.status(500).send({
+            message: "Error updating user",
+            error,
+          });
+        });
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error retrieving user",
+        error,
+      });
+    });
+});
+
+
 // POST /api/user/logout
 // AUTH: log out a user and invalidate their token
 router.post("/logout", authenticateUser, (req, res) => {
@@ -188,7 +284,7 @@ router.get('/', (req, response) => {
         return {
           id: user._id,
           ...user._doc
-        };  
+        };
       }));
     })
     .catch((error) => {
@@ -226,40 +322,40 @@ router.put("/:id", async (req, res) => {
     success: true,
     message: "User updated successfully",
     user
-    });
-    });
+  });
+});
 
 //DELETE api for deleting transaction
-  router.delete("/:id", async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const user = await Users.findByIdAndRemove(id);
-  
-      if (user) {
-        res.status(200).json({
-          success: true,
-          message: "User deleted successfully"
-        });
-      } else {
-        res.status(404).json({
-          success: false,
-          message: "User not found"
-        });
-      }
-    } catch (error) {
-      res.status(500).json({
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await Users.findByIdAndRemove(id);
+
+    if (user) {
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
+      });
+    } else {
+      res.status(404).json({
         success: false,
-        message: "Error deleting user",
-        error: error.message
+        message: "User not found"
       });
     }
-  });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error: error.message
+    });
+  }
+});
 
-  //POST api for creating a user
+//POST api for creating a user
 router.post("/", async (req, res) => {
   try {
-    const { name, email, password, phonenumber, city} = req.body;
+    const { name, email, password, phonenumber, city } = req.body;
 
     // Validate the request body
     if (!name || !email || !password || !phonenumber || !city) {
@@ -300,5 +396,5 @@ router.post("/", async (req, res) => {
     });
   }
 });
-  
+
 module.exports = router;

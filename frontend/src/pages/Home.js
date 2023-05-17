@@ -22,13 +22,22 @@ function Home() {
                     </Link>
                     <Link to={"/request"}>
 
-                    <button className='btn btn-main'>Proceed with Book Request</button>
+                        <button className='btn btn-main'>Proceed with Book Request</button>
                     </Link>
-                    
+
                     <img src={brandimg} id="brandimg" />
                 </div>
                 <div className="cards"></div>
             </div>
+
+            {/* <div className="stats">
+                <div className="container">
+                    <div className="card">
+                        <h1>100+</h1>
+                        <h2>Books Donated</h2>
+                    </div>
+                </div>
+            </div> */}
         </div>
     )
 

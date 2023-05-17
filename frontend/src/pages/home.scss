@@ -26,6 +26,7 @@
     height: calc(100vh - 60px);
     display: flex;
     justify-content: center;
+    flex-direction: column;
     .container {
         height: 100%;
         display: flex;
@@ -55,5 +56,10 @@
             bottom: 5rem;
             height: 350px;
         }
+    }
+
+    .stats {
+        width: 100%;
+        background-color: cadetblue;
     }
 }

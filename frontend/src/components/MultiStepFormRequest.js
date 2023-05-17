@@ -5,7 +5,7 @@ import BookDetails from './bookforms/BookDetails';
 import "./MultiStepForm.scss"
 import LocationSelectionForm from './bookforms/LocationSelect';
 import BookDetailedSelect from './bookforms/BookDetailedSelect';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Spinner from './Spinner';
 
 export default function MultiStepFormRequest() {
@@ -36,12 +36,20 @@ export default function MultiStepFormRequest() {
     //fetch when grade is selected
     const [allBooks, setAllBooks] = useState([]);
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const fetchBooks = async (grade) => {
+        setLoading(true);
         const res = await fetch('/api/books/available?classLevel=' + grade + "&collectionPoint=" + values.collectionPoint);
         const data = await res.json();
         setAllBooks(data.books);
+        setLoading(false);
+        setError(false);
+        if(data.books.length === 0) {
+            setError('No Books Available for this grade and location. Please try another location or grade');
+        }
     }
 
     //make a submit function
@@ -52,7 +60,7 @@ export default function MultiStepFormRequest() {
     //useeffect to fetch all books
     useEffect(() => {
         if (values.grade === '' || values.stream === '') {
-            setAllBooks([]);
+            return setAllBooks([]);
         };
 
         fetchBooks(values.grade);
@@ -79,19 +87,28 @@ export default function MultiStepFormRequest() {
             body: JSON.stringify({ ...values, token: localStorage.getItem('token') })
         });
         const data = await res.json();
-        console.log(data);
-        setSubmitting(false);
-        navigate('/dashboard');
+        if (res.status === 200) {
+            // alert('Request Submitted Successfully');
+            setSubmitting(false);
+            navigate('/dashboard');
+        } else {
+            setError(data.msg);            
+            setSubmitting(false);
+        }
 
     }
 
     //nextstep
     const nextStep = () => {
+        setLoading(false);
+        setError(false);
         setStep(step + 1);
     }
 
     //prevstep
     const prevStep = () => {
+        setLoading(false);
+        setError(false);
         setStep(step - 1);
     }
 
@@ -109,11 +126,18 @@ export default function MultiStepFormRequest() {
 
             <div id='bookform'>
                 <div>
-                <div class="progress" style={{ marginBottom: "1rem" }}>
+                {!error && <div class="progress" style={{ marginBottom: "1rem" }}>
                     <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" style={{ width: `${step / 3 * 100}%` }} aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                {step === 1 && <Education nextStep={nextStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
-                {step === 0 && <LocationSelectionForm nextStep={nextStep} prevStep={prevStep} handleChange={handleChange} state={values} />}
+                </div>}
+            {error && <div className="alert alert-danger" role="alert">
+                {error}
+                <br></br>
+                {/* <Link to='/dashboard' style={{marginTop: "1rem"}} className='btn btn-main'>Go to Dashboard</Link> */}
+
+            </div>}
+            
+                {step === 1 && <Education nextStep={nextStep} disabledNextStep={!allBooks || allBooks.length === 0 || error} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} loading={loading} />}
+                {step === 0 && <LocationSelectionForm nextStep={nextStep} handleChange={handleChange} state={values} />}
                 {step === 2 && <BookDetailedSelect nextStep={submit} prevStep={prevStep} handleChange={handleChange} state={values} allBooks={allBooks} />}
                 
             {

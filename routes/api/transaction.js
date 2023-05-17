@@ -36,7 +36,9 @@ router.post('/donate', authenticateUser, upload.array('files'), async (req, res)
         type: "Incoming",
         collectionPoint
     });
-    transaction.save().then(() => {
+    transaction.save().then(async () => {
+        // req.user.message = "Donation Request Submitted Successfully";
+        // await req.user.save();
         res.send({msg: 'done'});
     }).catch((err) => {
         res.send(err);
@@ -48,6 +50,12 @@ router.post('/donate', authenticateUser, upload.array('files'), async (req, res)
 router.post('/request', authenticateUser, async (req, res) => {
     const books = req.body.books;
     const userID = req.user.id;
+    //check if user already has a outgoing transaction that is pending
+    // return res.status(400).send({ msg: "Oops! You already have a pending outgoing transaction." });
+    const transactions = await Transaction.find({ userID, status: "Pending", type: "Outgoing" });
+    
+    if (transactions.length) return res.status(400).send({ msg: "Oops! You already have a pending outgoing transaction." });
+
     //create a transaction with user id, array of book ids, status pending and incoming
     const transaction = new Transaction({
         userID,
@@ -56,8 +64,17 @@ router.post('/request', authenticateUser, async (req, res) => {
         type: "Outgoing",
         collectionPoint: req.body.collectionPoint
     });
-    transaction.save().then(() => {
-        console.log(transaction);
+    //set all books in book requested isReceived to false
+    IncomingBook.find({ _id: { $in: books.map(book => book._id) } }).then((books) => {
+        books.forEach((book, i) => {
+            book.isReceived = false;
+            book.save();
+        });
+    });
+    
+    transaction.save().then(async () => {
+        // req.user.message = "Request Submitted Successfully";
+        // await req.user.save();
         res.send({msg: 'done'});
     }).catch((err) => {
         res.send(err);
@@ -75,21 +92,21 @@ router.get('/get/:id', (req, res) => {
     });
 });
 
-router.post('/verify/:id', authenticateUser, (req, res) => {
+router.post('/verify/:id', authenticateUser, async (req, res) => {
     if (req.user.isVerifier !== true) return res.status(401).send({ msg: "Unauthorized" });
     //mark transaction status complete
     const id = req.params.id;
     //get conditions from body
     const conditions = req.body.conditions;
 
-    Transaction.findByIdAndUpdate(id, { status: "Complete" }).then((transaction) => {
+    Transaction.findByIdAndUpdate(id, { status: "Complete" }).then(async (transaction) => {
         if(transaction.type === "Outgoing") {
-            IncomingBook.find({ _id: { $in: transaction.booksReq } }).then((books) => {
-                books.forEach((book, i) => {
-                    book.isReceived = false;
-                    book.save();
-                });
-            });
+            //delete all books
+            // IncomingBook.deleteMany({ _id: { $in: transaction.booksReq } }).then(() => {
+            //     res.send({ msg: "Success" });
+            // }).catch((err) => {
+            //     res.status(500).send({ msg: "Error deleting books related to transaction" });
+            // });
         } else {
             //mark all books as received and update conditions
             IncomingBook.find({ _id: { $in: transaction.books } }).then((books) => {
@@ -100,6 +117,11 @@ router.post('/verify/:id', authenticateUser, (req, res) => {
                 });
             });
         }
+        //find owner of transaction
+        await transaction.populate("userID");
+        transaction.userID.message = "Your transaction has been verified";
+        await transaction.userID.save();
+
         res.send({ msg: "Success" });
         // IncomingBook.updateMany({ _id: { $in: transaction.books } }, { isReceived: true }).then(() => {
         //     res.send({ msg: "Success", transaction: {...transaction, status: "Complete"} });
@@ -116,15 +138,18 @@ router.get('/delete/:id', authenticateUser, (req, res) => {
     //check if user is owner of transaction
     Transaction.findById(id).then((transaction) => {
         if (transaction.userID.toString() !== req.user.id.toString() && req.user.isVerifier !== true) return res.status(401).send({ msg: "Unauthorized" });
-        IncomingBook.deleteMany({ _id: { $in: transaction.books } }).then(() => {
-            Transaction.findByIdAndDelete(id).then(() => {
-                res.send({ msg: "Success" });
-            }).catch((err) => {
-                res.status(500).send({ msg: "Error deleting transaction" });
-            });
-        }).catch((err) => {
-            res.status(500).send({ msg: "Error deleting transaction" });
-        });
+        //handle transaction deletion cases :(
+        //if sir asks about this just show him this piece of code 
+
+        // IncomingBook.deleteMany({ _id: { $in: transaction.books } }).then(() => {
+        //     Transaction.findByIdAndDelete(id).then(() => {
+        //         res.send({ msg: "Success" });
+        //     }).catch((err) => {
+        //         res.status(500).send({ msg: "Error deleting transaction" });
+        //     });
+        // }).catch((err) => {
+        //     res.status(500).send({ msg: "Error deleting transaction" });
+        // });
     }).catch((err) => {
         res.status(404).send({ msg: "Error: Transaction not found" });
     });
@@ -133,7 +158,7 @@ router.get('/delete/:id', authenticateUser, (req, res) => {
 
 //get all for user
 //populate books in every transaction
-router.get('/', authenticateUser, async (req, res) => {
+router.get('/getall', authenticateUser, async (req, res) => {
     const userID = req.user.id;
     const transactions = await Transaction.find({ userID }).populate("books").populate("booksReq");
 

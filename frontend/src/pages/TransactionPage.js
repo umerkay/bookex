@@ -7,11 +7,14 @@ import "./TransactionPage.scss"
 import OneTransaction from '../components/OneTransaction';
 import { Table } from 'react-bootstrap';
 import { Form } from 'react-bootstrap';
-import { FaCheck, FaCheckCircle, FaQrcode, FaTrash } from 'react-icons/fa';
+import { FaBook, FaCheck, FaCheckCircle, FaInfo, FaMapMarker, FaQrcode, FaStar, FaTrash, FaUserAlt } from 'react-icons/fa';
 import BasicModal from '../components/BasicModal';
 import QRCode from "react-qr-code";
+import "../components/bookforms/BookSelect.scss"
 
 const HOST_URL = "10.7.100.55:3000"
+
+//add a review button to open review modal if transaction is complete and outgoing and user is the owner
 
 export default function TransactionPage(props) {
     //get transaction id from props
@@ -24,6 +27,18 @@ export default function TransactionPage(props) {
     const [conditions, setConditions] = useState([]);
     const [showQR, setShowQR] = useState(false);
 
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [image, setImage] = useState(null);
+
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [review, setReview] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [bookForReview, setBookForReview] = useState(null);
+
+    const showImage = (image) => {
+        setImage(image);
+        setShowImageModal(true);
+    };
 
     useEffect(() => {
         (async () => {
@@ -82,6 +97,25 @@ export default function TransactionPage(props) {
         }
     };
 
+    //send request to /api/user/reviewincomingbook/:id
+
+    const submitReview = async (book) => {
+        const response = await fetch('/api/users/reviewincomingbook/' + book._id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': token
+            },
+            body: JSON.stringify({ review, rating })
+        });
+
+        if (response.status === 200) {
+            setShowReviewModal(false);
+            setTransaction({ ...transaction, books: transaction.books.map(b => b._id === book._id ? { ...b, hasBeenReviewed: true } : b) });
+        }
+    };
+
+
     const updtCondition = (e, i) => {
         let newConditions = [...conditions];
         newConditions[i] = e.target.value;
@@ -90,6 +124,48 @@ export default function TransactionPage(props) {
 
     return (
         <div className="container">
+            {showImageModal ?
+                <BasicModal show={showImageModal} handleClose={() => setShowImageModal(false)} title={"Book Image"} >
+                    <div className='qrcode flex'>
+                        <img src={image} alt="Book Image" style={{ height: "auto", maxWidth: "100%", width: "max-content" }} />
+                    </div>
+                </BasicModal> : null}
+
+            {
+                showReviewModal ?
+                    <BasicModal show={showReviewModal} handleClose={() => setShowReviewModal(false)} title={"Review"} >
+                        <div className='qrcode flex'>
+                            <Form className="flex" style={{ flexDirection: "column" }}>
+                                <div className='flex'>
+                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                                        <Form.Label>Review</Form.Label>
+                                        <Form.Control required as="textarea" rows={3} onChange={(e) => setReview(e.target.value)} />
+                                    </Form.Group>
+                                    <Form.Group controlId="exampleForm.ControlSelect1">
+                                        <Form.Label>Rating</Form.Label>
+                                        <Form.Control as="select" required onChange={(e) => setRating(e.target.value)}>
+                                            <option value={0}>Select Rating</option>
+                                            <option value={1}>⭐</option>
+                                            <option value={2}>⭐⭐</option>
+                                            <option value={3}>⭐⭐⭐</option>
+                                            <option value={4}>⭐⭐⭐⭐</option>
+                                            <option value={5}>⭐⭐⭐⭐⭐</option>
+
+                                        </Form.Control>
+                                    </Form.Group>
+                                </div>
+
+                                <button className="btn btn-main" onClick={(e) => {
+                                    e.preventDefault();
+
+                                    submitReview(bookForReview);
+                                }
+                                }>Submit</button>
+                            </Form>
+                        </div>
+                    </BasicModal> : null
+            }
+
             {user && user._id === transaction?.userID._id ?
                 <BasicModal show={showQR} handleClose={() => setShowQR(false)} title={"Scan QR Code"} >
                     <div className='qrcode flex'>
@@ -111,8 +187,8 @@ export default function TransactionPage(props) {
                     ) : null}
                 </div>
                 <OneTransaction detailed={true} transaction={transaction || {}} loading={!transaction} />
-                <div style={{width: "100%", overflowX: "auto"}}>
-                <Table>
+                <div className="flex" style={{ flexDirection: "column" }}>
+                    {/* <Table>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -121,6 +197,7 @@ export default function TransactionPage(props) {
                             <th>Author</th>
                             <th>Class Level</th>
                             <th>Condition</th>
+                            <th>Image</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,11 +213,44 @@ export default function TransactionPage(props) {
                                     <input type='number' min={1} max={10} value={conditions[i]} onChange={e => updtCondition(e, i)} /> :
                                     <td>{conditions[i]}</td>
                                 }
+                                <td><img src={book.bookID.image} width={200} alt={book.bookID.title} /></td>
                             </tr>
 
                         ))}
                     </tbody>
-                </Table>
+                </Table> */}
+                    {transaction?.books.map((book, i) => {
+                        return (<>
+                            <div className='book-details'>
+                                <div className='img' onClick={() => showImage(book.image)} style={{ background: "url(" + book.image + ")" }}></div>
+                                {/* <img src={book.image}></img> */}
+                                <div className='details'>
+                                    <div className='flex' style={{ justifyContent: "flex-start" }}>
+                                        <span> <FaBook /> {book.bookID.title}</span>
+                                        <span> <FaUserAlt /> {book.bookID.author}</span>
+                                        <span> <FaInfo /> {book.bookID.subject}</span>
+                                        {/* <span> <FaInfo/> {book.bookID.classLevel}</span> */}
+
+                                    </div>
+                                    <span> <FaStar></FaStar>
+                                        {user?.isVerifier && transaction?.status !== "Complete" ?
+                                            <input type='number' min={1} max={10} value={conditions[i]} onChange={e => updtCondition(e, i)} /> :
+                                            <td>{conditions[i]}</td>
+                                        }
+                                    </span>
+                                    <span> <FaMapMarker></FaMapMarker> {book.collectionPoint}</span>
+                                    {
+                                        (book.hasBeenReviewed !== true && transaction?.status === "Complete" && user?._id === transaction?.userID?._id && transaction.type === "Outgoing") ?
+                                            <button style={{ marginTop: "1rem", width: "max-content" }} className='btn btn-main' onClick={() => { setShowReviewModal(true); setBookForReview(book) }}>Review Donor</button> : null
+
+                                    }
+                                    {
+                                        book.hasBeenReviewed ? (<span><FaCheck /> Reviewed</span>) : null
+                                    }
+                                </div>
+                            </div></>
+                        )
+                    })}
                 </div>
                 <div className='controls'>
                     {user && user.isVerifier ? (

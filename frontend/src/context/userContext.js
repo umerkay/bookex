@@ -46,6 +46,13 @@ export const UserProvider = ({children}) => {
                     isLoading: false,
                     error: null
                 }
+            case 'UPDATE_DETAILS':
+                return {
+                    ...state,
+                    user: action.payload.user,
+                    isLoading: false,
+                    error: null
+                }
             case 'LOADING':
                 return {
                     ...state,

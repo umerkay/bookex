@@ -62,8 +62,15 @@ export default function Education(props) {
 
                 </Form.Group>
 
-                    <Spinner forceChildren loading={(grade && stream && (!allBooks || allBooks.length == 0))}>
-                    <input type='submit' disabled={!allBooks || allBooks.length == 0} className='btn btn-main' value='Next'/>
+                    <Spinner forceChildren loading={props.loading}>
+                        {
+                            props.prevStep ?
+
+                                <button className='btn btn-main' onClick={props.prevStep}>Back</button>
+                                : null
+
+                        }
+                    <input type='submit' disabled={props.loading || props.disabledNextStep} className='btn btn-main' value='Next'/>
 
                     </Spinner>
 
