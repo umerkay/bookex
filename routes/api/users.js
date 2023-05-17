@@ -213,30 +213,76 @@ router.put("/:id", async (req, res) => {
     });
     });
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  console.log(id)
-  // try {
-    const user = await Users.findByIdAndRemove(id);
-
-    if (user) {
-      res.status(200).json({
-        success: true,
-        message: "User deleted successfully"
-      });
-    } else {
-      res.status(404).json({
+//DELETE api for deleting transaction
+  router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const user = await Users.findByIdAndRemove(id);
+  
+      if (user) {
+        res.status(200).json({
+          success: true,
+          message: "User deleted successfully"
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "User not found"
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: "User not found"
+        message: "Error deleting user",
+        error: error.message
       });
     }
-  // } catch (error) {
-  //   res.status(500).json({
-  //     success: false,
-  //     message: "Error deleting user"
-  //   });
-  // }
+  });
+
+  //POST api for creating a user
+router.post("/", async (req, res) => {
+  try {
+    const { name, email, password, phonenumber, city} = req.body;
+
+    // Validate the request body
+    if (!name || !email || !password || !phonenumber || !city) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide name, email, password, phonenumber and city. "
+      });
+    }
+
+    // Check if the user already exists
+    const existingUser = await Users.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exists"
+      });
+    }
+
+    // Create the new user
+    const newUser = await Users.create({
+      name,
+      email,
+      password,
+      phonenumber,
+      city
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user: newUser
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error creating user",
+      error: error.message
+    });
+  }
 });
-
-
+  
 module.exports = router;
