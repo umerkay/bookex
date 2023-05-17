@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
       });
   });
 
-//PUT api for updating Incoming Books
+//GET api for updating Incoming Books
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const { isReceived, condition } = req.body;
@@ -54,4 +54,27 @@ router.get("/:id", async (req, res) => {
   }
 });
   
+//DELETE api for deleting Book instance
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the IncomingBook in the database using the ID and delete it
+    const deletedIncomingBook = await IncomingBook.findByIdAndDelete(id);
+
+    // If the IncomingBook doesn't exist, return an error
+    if (!deletedIncomingBook) {
+      return res.status(404).json({ error: "IncomingBook not found" });
+    }
+
+    // Return a success message as the API response
+    res.status(200).json({
+      success: true,
+      message: "IncomingBook deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting IncomingBook" });
+  }
+});
+
 module.exports = router;
