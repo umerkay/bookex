@@ -16,7 +16,9 @@
     "start": "nodemon index.js"
   },
   "nodemonConfig": {
-      "ignore": ["frontend/*"]
+    "ignore": [
+      "frontend/*"
+    ]
   },
   "repository": {
     "type": "git",

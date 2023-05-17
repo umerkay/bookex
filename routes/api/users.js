@@ -57,6 +57,42 @@ router.post('/user', authenticateUser, (request, response) => {
   });
 });
 
+//get all users on get /
+router.get('/', (req, response) => {
+  Users.find()
+    .then((users) => {
+      response.status(200).send(users.map((user) => {
+        return {
+          id: user._id,
+          ...user._doc
+        };  
+      }));
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error retrieving users",
+        error,
+      });
+    });
+});
+router.get('/:id', (req, response) => {
+  Users.findById(req.params.id)
+    .then((user) => {
+      response.status(200).send({
+        id: user._id,
+        ...user._doc
+      });
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error retrieving user",
+        error,
+      });
+    });
+});
+
+
+
 // login endpoint
 router.post("/login", (request, response) => {
   // check if email exists
@@ -145,7 +181,7 @@ router.post("/logout", authenticateUser, (req, res) => {
 // });
 
 //POST /api/user/update: (AUTH) update user profile details
-router.post("/update", authenticateUser, (req, res) => {
+router.put("/update", authenticateUser, (req, res) => {
   const user = req.user;
   user.name = req.body.name;
   user.email = req.body.email;
@@ -159,5 +195,42 @@ router.post("/update", authenticateUser, (req, res) => {
       res.status(500).json({ message: "Error occurred", error: error });
     });
 });
+
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, email, phonenumber, city } = req.body;
+  const user = await Users.findByIdAndUpdate(id, { name, email, phonenumber, city }, { new: true });
+  res.status(200).json({
+    success: true,
+    message: "User updated successfully",
+    user
+    });
+    });
+
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  // try {
+    const user = await Users.findByIdAndRemove(id);
+
+    if (user) {
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //     message: "Error deleting user"
+  //   });
+  // }
+});
+
 
 module.exports = router;
