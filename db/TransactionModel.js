@@ -29,7 +29,7 @@ const TransactionSchema = new Schema({
         enum: ['Pending Approval', 'Pending', 'Complete'],
         required: [true, 'Please provide a status'],
     },
-    exchangetype: {
+    type: {
         type: String,
         enum: ['Incoming', 'Outgoing'],
         required: [true, 'Please provide type of transaction']

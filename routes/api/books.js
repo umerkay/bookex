@@ -224,5 +224,31 @@ router.delete('/:bookId/:transactionId', (req, res) => {
         res.status(500).json({ message: 'Error deleting transaction', error });
       });
   });
+
+
+  //Books Routes for Admin Panel
+  //
+  router.get('/', (req, res) => {
+    Books.find()
+      .then((books) => {
+        const bookList = books.map((book) => {
+          return {
+            id: book._id,
+            title: book.title,
+            author: book.author,
+            subject: book.subject,
+            classLevel: book.classLevel,
+          };
+        });
+  
+        res.status(200).json(bookList);
+      })
+      .catch((error) => {
+        res.status(500).json({
+          message: 'Error retrieving books',
+          error: error,
+        });
+      });
+  });
   
 module.exports = router;

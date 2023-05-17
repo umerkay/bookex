@@ -57,24 +57,7 @@ router.post('/user', authenticateUser, (request, response) => {
   });
 });
 
-//get all users on get /
-router.get('/', (req, response) => {
-  Users.find()
-    .then((users) => {
-      response.status(200).send(users.map((user) => {
-        return {
-          id: user._id,
-          ...user._doc
-        };  
-      }));
-    })
-    .catch((error) => {
-      response.status(500).send({
-        message: "Error retrieving users",
-        error,
-      });
-    });
-});
+
 router.get('/:id', (req, response) => {
   Users.findById(req.params.id)
     .then((user) => {
@@ -165,20 +148,20 @@ router.post("/logout", authenticateUser, (req, res) => {
     });
 });
 
-//get user id from the jwt token
+// get user id from the jwt token
 // GET /api/user/: (AUTH) get user profile details
-// router.get("/details", authenticateUser, (req, res) => {
-//   const user = req.user;
-//   res.status(200).json({
-//     message: "User profile details",
-//     user: {
-//       name: user.name,
-//       email: user.email,
-//       phonenumber: user.phonenumber,
-//       city: user.city,
-//     },
-//   });
-// });
+router.get("/details", authenticateUser, (req, res) => {
+  const user = req.user;
+  res.status(200).json({
+    message: "User profile details",
+    user: {
+      name: user.name,
+      email: user.email,
+      phonenumber: user.phonenumber,
+      city: user.city,
+    },
+  });
+});
 
 //POST /api/user/update: (AUTH) update user profile details
 router.put("/update", authenticateUser, (req, res) => {
@@ -193,6 +176,29 @@ router.put("/update", authenticateUser, (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ message: "Error occurred", error: error });
+    });
+});
+
+
+
+
+//get all users on get /
+//User Routes for Admin Panel
+router.get('/', (req, response) => {
+  Users.find()
+    .then((users) => {
+      response.status(200).send(users.map((user) => {
+        return {
+          id: user._id,
+          ...user._doc
+        };  
+      }));
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error retrieving users",
+        error,
+      });
     });
 });
 
