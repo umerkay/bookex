@@ -13,6 +13,7 @@ router.post('/register', (request, response) => {
     .hash(request.body.password, 10)
     .then((hashedPassword) => {
       // create a new user instance and collect the data
+      console.log(request.body)
       const user = new Users({
         name: request.body.name,
         email: request.body.email,
@@ -41,8 +42,9 @@ router.post('/register', (request, response) => {
     })
     // catch error if the password hash isn't successful
     .catch((e) => {
+      console.log(e);
       response.status(500).send({
-        message: "There was an error creating this user :(",
+        message: "Password was not hashed successfully",
         e,
       });
     });
@@ -56,7 +58,7 @@ router.post('/user', authenticateUser, (request, response) => {
 });
 
 
-// router.get('/:id', (req, response) => {
+// router.get('/one:id', (req, response) => {
 //   Users.findById(req.params.id)
 //     .then((user) => {
 //       response.status(200).send({
