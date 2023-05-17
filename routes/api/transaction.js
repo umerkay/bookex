@@ -133,12 +133,12 @@ router.get('/delete/:id', authenticateUser, (req, res) => {
 
 //get all for user
 //populate books in every transaction
-router.get('/getall', authenticateUser, async (req, res) => {
+router.get('/', authenticateUser, async (req, res) => {
     const userID = req.user.id;
     const transactions = await Transaction.find({ userID }).populate("books").populate("booksReq");
 
     transactions.map(transaction => {
-        if (transaction.type === "Outgoing")
+        if (transaction.type === "Outgoing")    
             transaction.books = transaction.booksReq;
     });
 
